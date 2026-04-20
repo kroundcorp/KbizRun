@@ -269,17 +269,27 @@ function Header() {
         </div>
 
         <div className="hidden lg:block border-t border-gray-100">
-          <div className="max-w-[1200px] mx-auto px-4 flex items-center justify-end gap-5 xl:gap-6 py-2.5 text-sm text-gray-700">
-            <button onClick={() => openCouponModal()} className="hover:text-blue-600 whitespace-nowrap">쿠폰인증센터</button>
-            <Link href="/events" className="hover:text-blue-600">이벤트</Link>
-            <Link href="/books" className="hover:text-blue-600">교재</Link>
-            <Link href="/community" className="hover:text-blue-600">커뮤니티</Link>
-            <Link href="/curriculum" className="hover:text-blue-600 whitespace-nowrap">전체 서비스</Link>
-            <button onClick={() => openAuthModal('login')} className="hover:text-blue-600">로그인</button>
-            <button onClick={() => openAuthModal('signup')} className="hover:text-blue-600">회원가입</button>
-            <Link href="/pricing" className="bg-[#2563eb] text-white px-4 xl:px-5 py-2 rounded-md font-medium hover:bg-blue-700 transition-colors whitespace-nowrap">
-              이용권 구매
-            </Link>
+          <div className="max-w-[1200px] mx-auto px-4 flex items-center gap-4 py-2.5">
+            <div className="flex items-center gap-2 shrink-0">
+              <button className="bg-[#2563eb] text-white px-5 py-2 rounded-full text-sm font-bold">자격증</button>
+              <Link href="/curriculum" className="text-gray-600 px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-50">
+                교육과정
+              </Link>
+            </div>
+            <div className="w-px h-4 bg-gray-300 mx-2 shrink-0"></div>
+
+            <div className="flex items-center gap-5 xl:gap-6 text-sm text-gray-700 ml-auto">
+              <button onClick={() => openCouponModal()} className="hover:text-blue-600 whitespace-nowrap">쿠폰인증센터</button>
+              <Link href="/events" className="hover:text-blue-600">이벤트</Link>
+              <Link href="/books" className="hover:text-blue-600">교재</Link>
+              <Link href="/community" className="hover:text-blue-600">커뮤니티</Link>
+              <Link href="/curriculum" className="hover:text-blue-600 whitespace-nowrap">전체 서비스</Link>
+              <button onClick={() => openAuthModal('login')} className="hover:text-blue-600">로그인</button>
+              <button onClick={() => openAuthModal('signup')} className="hover:text-blue-600">회원가입</button>
+              <Link href="/pricing" className="bg-[#2563eb] text-white px-4 xl:px-5 py-2 rounded-md font-medium hover:bg-blue-700 transition-colors whitespace-nowrap">
+                이용권 구매
+              </Link>
+            </div>
           </div>
         </div>
       </header>
