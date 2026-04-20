@@ -227,38 +227,22 @@ function MobileDrawer({
 
 function Header() {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const pathname = usePathname();
 
   return (
     <>
       <header className="bg-white border-b border-gray-100 sticky top-0 z-30">
-        <div className="max-w-[1200px] mx-auto px-4 py-3 lg:py-5 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-6 lg:gap-12 min-w-0">
-            <Link href="/" className="flex items-center shrink-0">
-              <img src="/logo.png" alt="BR 케이비즈런" className="h-7 lg:h-8 object-contain" />
-            </Link>
+        <div className="max-w-[1200px] mx-auto px-4 py-3 lg:py-4 flex items-center justify-between gap-3">
+          <Link href="/" className="flex items-center shrink-0">
+            <img src="/logo.png" alt="BR 케이비즈런" className="h-7 lg:h-8 object-contain" />
+          </Link>
 
-            <div className="relative hidden lg:block w-[280px] xl:w-[320px]">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <input
-                type="text"
-                placeholder="검색"
-                className="w-full bg-gray-50 border border-gray-200 rounded-full py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
-              />
-            </div>
-          </div>
-
-          <div className="hidden lg:flex items-center gap-5 xl:gap-6 text-sm text-gray-700">
-            <button onClick={() => openCouponModal()} className="hover:text-blue-600 whitespace-nowrap">쿠폰인증센터</button>
-            <Link href="/events" className="hover:text-blue-600">이벤트</Link>
-            <Link href="/books" className="hover:text-blue-600">교재</Link>
-            <Link href="/community" className="hover:text-blue-600">커뮤니티</Link>
-            <Link href="/curriculum" className="hover:text-blue-600 whitespace-nowrap">전체 서비스</Link>
-            <button onClick={() => openAuthModal('login')} className="hover:text-blue-600">로그인</button>
-            <button onClick={() => openAuthModal('signup')} className="hover:text-blue-600">회원가입</button>
-            <Link href="/pricing" className="bg-[#2563eb] text-white px-4 xl:px-5 py-2.5 rounded-md font-medium hover:bg-blue-700 transition-colors whitespace-nowrap">
-              이용권 구매
-            </Link>
+          <div className="relative hidden lg:block flex-1 max-w-[420px] mx-8">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder="검색"
+              className="w-full bg-gray-50 border border-gray-200 rounded-full py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+            />
           </div>
 
           <div className="flex lg:hidden items-center gap-1">
@@ -284,34 +268,18 @@ function Header() {
           </div>
         </div>
 
-        <div className="border-t border-gray-100 lg:border-t-0">
-          <div className="max-w-[1200px] mx-auto px-4 flex items-center gap-4 lg:gap-6 py-2.5 lg:py-3">
-            <div className="hidden lg:flex items-center gap-2 shrink-0">
-              <button className="bg-[#2563eb] text-white px-5 py-2 rounded-full text-sm font-bold">자격증</button>
-              <Link href="/curriculum" className="text-gray-600 px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-50">
-                교육과정
-              </Link>
-            </div>
-            <div className="hidden lg:block w-px h-4 bg-gray-300 mx-2 shrink-0"></div>
-
-            <nav
-              className="flex items-center gap-5 lg:gap-7 text-sm lg:text-[15px] font-medium text-gray-800 overflow-x-auto scroll-smooth"
-              style={{ scrollbarWidth: 'none' }}
-            >
-              {subjects.map((s) => {
-                const href = `/subject/${s.id}`;
-                const isActive = pathname === href;
-                return (
-                  <Link
-                    key={s.id}
-                    href={href}
-                    className={`hover:text-blue-600 whitespace-nowrap ${isActive ? 'text-blue-600 font-bold' : ''}`}
-                  >
-                    {s.name}
-                  </Link>
-                );
-              })}
-            </nav>
+        <div className="hidden lg:block border-t border-gray-100">
+          <div className="max-w-[1200px] mx-auto px-4 flex items-center justify-end gap-5 xl:gap-6 py-2.5 text-sm text-gray-700">
+            <button onClick={() => openCouponModal()} className="hover:text-blue-600 whitespace-nowrap">쿠폰인증센터</button>
+            <Link href="/events" className="hover:text-blue-600">이벤트</Link>
+            <Link href="/books" className="hover:text-blue-600">교재</Link>
+            <Link href="/community" className="hover:text-blue-600">커뮤니티</Link>
+            <Link href="/curriculum" className="hover:text-blue-600 whitespace-nowrap">전체 서비스</Link>
+            <button onClick={() => openAuthModal('login')} className="hover:text-blue-600">로그인</button>
+            <button onClick={() => openAuthModal('signup')} className="hover:text-blue-600">회원가입</button>
+            <Link href="/pricing" className="bg-[#2563eb] text-white px-4 xl:px-5 py-2 rounded-md font-medium hover:bg-blue-700 transition-colors whitespace-nowrap">
+              이용권 구매
+            </Link>
           </div>
         </div>
       </header>
