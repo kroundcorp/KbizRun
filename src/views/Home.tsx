@@ -10,7 +10,6 @@ import {
 import Link from 'next/link';
 import HeroBanner from '../components/HeroBanner';
 import { steps, type StepColor } from '../data/steps';
-import { openAuthModal } from '../lib/modalEvents';
 
 const STEP_STYLE: Record<StepColor, {
   decor: string; badge: string; accent: string; dot: string; hover: string; iconBg: string;
@@ -100,16 +99,15 @@ function ProfessorProfile() {
 }
 
 export default function Home() {
-  const onAuthClick = (mode: 'login' | 'signup') => openAuthModal(mode);
   return (
     <main className="bg-[#f8f9fa] min-h-screen py-8">
       <div className="max-w-[1200px] mx-auto px-4 space-y-8">
-        
+
         {/* Top Grid Section */}
         <div className="grid grid-cols-12 gap-4 md:gap-6">
 
           {/* Left Sidebar - Upload Schedule */}
-          <div className="col-span-12 md:col-span-6 lg:col-span-2 lg:order-1 bg-white rounded-2xl border border-gray-200 p-5 shadow-sm flex flex-col">
+          <div className="col-span-12 lg:col-span-3 lg:order-1 bg-white rounded-2xl border border-gray-200 p-5 shadow-sm flex flex-col">
             <div className="flex justify-between items-center mb-6">
               <h3 className="font-bold text-gray-900">업로드 일정</h3>
               <a href="#" className="text-[11px] text-gray-400 flex items-center hover:text-gray-600">
@@ -147,37 +145,6 @@ export default function Home() {
 
           {/* Center - Hero Banner */}
           <HeroBanner />
-
-          {/* Right - Login Box */}
-          <div className="col-span-12 md:col-span-6 lg:col-span-3 lg:order-3 bg-white rounded-2xl border border-gray-200 p-6 shadow-sm relative flex flex-col justify-center mt-3 md:mt-0">
-            {/* Badge */}
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#fff8d6] text-[#b48a00] text-xs font-bold px-4 py-1.5 rounded-full border border-[#ffe066] whitespace-nowrap shadow-sm">
-              ✨ 공공조달관리사 기출 무료! ✨
-            </div>
-            
-            <h3 className="font-bold text-lg text-gray-900 mb-6 mt-2">로그인</h3>
-            
-            <div className="space-y-3 mb-6">
-              <button 
-                onClick={() => onAuthClick('login')}
-                className="w-full bg-[#2563eb] text-white font-bold py-3.5 rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                로그인
-              </button>
-              <button 
-                onClick={() => onAuthClick('signup')}
-                className="w-full bg-white text-[#2563eb] border border-[#2563eb] font-bold py-3.5 rounded-lg hover:bg-blue-50 transition-colors"
-              >
-                회원가입
-              </button>
-            </div>
-            
-            <div className="flex justify-center items-center gap-4 text-xs text-gray-500">
-              <button onClick={() => onAuthClick('login')} className="hover:text-gray-800">아이디 찾기</button>
-              <span className="text-gray-300">|</span>
-              <button onClick={() => onAuthClick('login')} className="hover:text-gray-800">비밀번호 찾기</button>
-            </div>
-          </div>
 
         </div>
 

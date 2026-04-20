@@ -103,14 +103,14 @@ export default function HeroBanner() {
         <Link
            href={slide.link}
           style={{ backgroundColor: slide.bgColor }}
-          className="col-span-12 md:col-span-12 lg:col-span-7 lg:order-2 rounded-2xl relative overflow-hidden flex flex-col justify-center p-6 md:p-10 shadow-sm transition-colors min-h-[220px] md:min-h-[280px]"
+          className="col-span-12 md:col-span-12 lg:col-span-9 lg:order-2 rounded-2xl relative overflow-hidden flex flex-col justify-center p-6 md:p-10 shadow-sm transition-colors min-h-[220px] md:min-h-[280px]"
         >
           {content}
         </Link>
       ) : (
         <div
           style={{ backgroundColor: slide.bgColor }}
-          className="col-span-12 md:col-span-12 lg:col-span-7 lg:order-2 rounded-2xl relative overflow-hidden flex flex-col justify-center p-6 md:p-10 shadow-sm min-h-[220px] md:min-h-[280px]"
+          className="col-span-12 md:col-span-12 lg:col-span-9 lg:order-2 rounded-2xl relative overflow-hidden flex flex-col justify-center p-6 md:p-10 shadow-sm min-h-[220px] md:min-h-[280px]"
         >
           {content}
         </div>

@@ -14,18 +14,10 @@ import {
   MessageSquare,
   Layers,
   LogIn,
-  UserPlus,
 } from 'lucide-react';
-import AuthModal from './AuthModal';
 import CouponModal from './CouponModal';
 import { subjects } from '../data/subjects';
-import {
-  AUTH_MODAL_EVENT,
-  COUPON_MODAL_EVENT,
-  openAuthModal,
-  openCouponModal,
-  type AuthMode,
-} from '../lib/modalEvents';
+import { COUPON_MODAL_EVENT, openCouponModal } from '../lib/modalEvents';
 
 function TopBanner() {
   return (
@@ -60,12 +52,10 @@ interface MobileNavItem {
 function MobileDrawer({
   isOpen,
   onClose,
-  onAuthClick,
   onCouponClick,
 }: {
   isOpen: boolean;
   onClose: () => void;
-  onAuthClick: (mode: AuthMode) => void;
   onCouponClick: () => void;
 }) {
   const pathname = usePathname();
@@ -127,28 +117,14 @@ function MobileDrawer({
         <div className="flex-1 overflow-y-auto">
           <div className="p-3">
             <p className="text-[11px] font-bold text-gray-400 tracking-wider px-3 py-2">계정</p>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                onClick={() => {
-                  onAuthClick('login');
-                  onClose();
-                }}
-                className="flex items-center gap-2 p-3 rounded-xl border border-gray-200 hover:bg-gray-50 text-sm font-bold text-gray-800"
-              >
-                <LogIn className="h-4 w-4" />
-                로그인
-              </button>
-              <button
-                onClick={() => {
-                  onAuthClick('signup');
-                  onClose();
-                }}
-                className="flex items-center gap-2 p-3 rounded-xl border border-gray-200 hover:bg-gray-50 text-sm font-bold text-gray-800"
-              >
-                <UserPlus className="h-4 w-4" />
-                회원가입
-              </button>
-            </div>
+            <Link
+              href="/login"
+              onClick={onClose}
+              className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 hover:bg-gray-50 text-sm font-bold text-gray-800"
+            >
+              <LogIn className="h-4 w-4 text-gray-500" />
+              로그인/회원가입
+            </Link>
           </div>
 
           <div className="p-3">
@@ -284,8 +260,7 @@ function Header() {
               <Link href="/books" className="hover:text-blue-600">교재</Link>
               <Link href="/community" className="hover:text-blue-600">커뮤니티</Link>
               <Link href="/curriculum" className="hover:text-blue-600 whitespace-nowrap">전체 서비스</Link>
-              <button onClick={() => openAuthModal('login')} className="hover:text-blue-600">로그인</button>
-              <button onClick={() => openAuthModal('signup')} className="hover:text-blue-600">회원가입</button>
+              <Link href="/login" className="hover:text-blue-600 whitespace-nowrap">로그인/회원가입</Link>
               <Link href="/pricing" className="bg-[#2563eb] text-white px-4 xl:px-5 py-2 rounded-md font-medium hover:bg-blue-700 transition-colors whitespace-nowrap">
                 이용권 구매
               </Link>
@@ -297,7 +272,6 @@ function Header() {
       <MobileDrawer
         isOpen={drawerOpen}
         onClose={() => setDrawerOpen(false)}
-        onAuthClick={(mode) => openAuthModal(mode)}
         onCouponClick={() => openCouponModal()}
       />
     </>
@@ -354,23 +328,14 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
   const pathname = usePathname() ?? '';
   const isExam = pathname.startsWith('/exam/') && !pathname.endsWith('/result');
   const isVideo = pathname.startsWith('/video/');
+  const isAuth = pathname === '/login' || pathname === '/signup';
 
-  const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<AuthMode>('login');
   const [couponModalOpen, setCouponModalOpen] = useState(false);
 
   useEffect(() => {
-    const onAuth = (e: Event) => {
-      const mode = (e as CustomEvent<AuthMode>).detail ?? 'login';
-      setAuthMode(mode);
-      setAuthModalOpen(true);
-    };
     const onCoupon = () => setCouponModalOpen(true);
-
-    window.addEventListener(AUTH_MODAL_EVENT, onAuth as EventListener);
     window.addEventListener(COUPON_MODAL_EVENT, onCoupon);
     return () => {
-      window.removeEventListener(AUTH_MODAL_EVENT, onAuth as EventListener);
       window.removeEventListener(COUPON_MODAL_EVENT, onCoupon);
     };
   }, []);
@@ -382,13 +347,8 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
       {!fullscreen && <TopBanner />}
       {!fullscreen && <Header />}
       {children}
-      {!fullscreen && <Footer />}
+      {!fullscreen && !isAuth && <Footer />}
 
-      <AuthModal
-        isOpen={authModalOpen}
-        onClose={() => setAuthModalOpen(false)}
-        initialMode={authMode}
-      />
       <CouponModal
         isOpen={couponModalOpen}
         onClose={() => setCouponModalOpen(false)}
