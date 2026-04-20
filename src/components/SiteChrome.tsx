@@ -221,6 +221,10 @@ function Header() {
             />
           </div>
 
+          <Link href="/login" className="hidden lg:inline-flex items-center text-sm text-gray-700 hover:text-blue-600 whitespace-nowrap shrink-0">
+            로그인/회원가입
+          </Link>
+
           <div className="flex lg:hidden items-center gap-1">
             <button
               aria-label="검색"
@@ -254,17 +258,17 @@ function Header() {
             </div>
             <div className="w-px h-4 bg-gray-300 mx-2 shrink-0"></div>
 
-            <div className="flex items-center gap-5 xl:gap-6 text-sm text-gray-700 ml-auto">
+            <div className="flex items-center gap-5 xl:gap-6 text-sm text-gray-700">
               <button onClick={() => openCouponModal()} className="hover:text-blue-600 whitespace-nowrap">쿠폰인증센터</button>
               <Link href="/events" className="hover:text-blue-600">이벤트</Link>
               <Link href="/books" className="hover:text-blue-600">교재</Link>
               <Link href="/community" className="hover:text-blue-600">커뮤니티</Link>
               <Link href="/curriculum" className="hover:text-blue-600 whitespace-nowrap">전체 서비스</Link>
-              <Link href="/login" className="hover:text-blue-600 whitespace-nowrap">로그인/회원가입</Link>
-              <Link href="/pricing" className="bg-[#2563eb] text-white px-4 xl:px-5 py-2 rounded-md font-medium hover:bg-blue-700 transition-colors whitespace-nowrap">
-                이용권 구매
-              </Link>
             </div>
+
+            <Link href="/pricing" className="bg-[#2563eb] text-white px-4 xl:px-5 py-2 rounded-md font-medium hover:bg-blue-700 transition-colors whitespace-nowrap ml-auto">
+              이용권 구매
+            </Link>
           </div>
         </div>
       </header>
