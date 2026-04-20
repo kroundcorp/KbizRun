@@ -1,0 +1,21 @@
+node_modules/
+build/
+dist/
+.next/
+.next-ai/
+next-env.d.ts
+coverage/
+.DS_Store
+*.log
+.env*
+!.env.example
+*.tsbuildinfo
+
+# Local Claude Code settings (user-specific permission allowlists)
+.claude/settings.local.json
+
+# macOS cruft
+.DS_Store
+
+# Locally-generated docx exports (md is authoritative)
+*.docx
