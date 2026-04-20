@@ -76,3 +76,35 @@ export const providerLabel: Record<AuthProvider, string> = {
   naver: '네이버',
   google: '구글',
 };
+
+// --- 휴대폰 번호 ---
+
+export function formatPhone(value: string): string {
+  const digits = value.replace(/\D/g, '').slice(0, 11);
+  if (digits.length < 4) return digits;
+  if (digits.length < 8) return `${digits.slice(0, 3)}-${digits.slice(3)}`;
+  return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
+}
+
+export function validatePhone(phone: string): FieldResult {
+  const cleaned = phone.replace(/[\s-]/g, '');
+  if (!cleaned) return { valid: false };
+  if (!/^01[016789]\d{7,8}$/.test(cleaned)) {
+    return { valid: false, message: '올바른 휴대폰 번호 형식이 아닙니다.' };
+  }
+  return { valid: true };
+}
+
+// --- SMS 인증번호 (Phase 1 데모) ---
+// Phase 2에서 외부 SMS 업체(NHN TOAST / 알리고 / CoolSMS) API로 교체.
+
+export const DEMO_SMS_CODE = '123456';
+export const SMS_CODE_LENGTH = 6;
+export const SMS_TIMEOUT_SEC = 180; // 3분
+
+export function validateSmsCode(code: string): FieldResult {
+  if (!code) return { valid: false };
+  if (!/^\d{6}$/.test(code))
+    return { valid: false, message: '인증번호는 숫자 6자리입니다.' };
+  return { valid: true };
+}

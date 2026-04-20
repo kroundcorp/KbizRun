@@ -6,6 +6,7 @@ import {
   Mail,
   Lock,
   User,
+  Phone,
   Eye,
   EyeOff,
   ArrowLeft,
@@ -13,6 +14,7 @@ import {
   AlertCircle,
   Info,
   Loader2,
+  ShieldCheck,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import LegalDocModal from './LegalDocModal';
@@ -25,6 +27,12 @@ import {
   validatePasswordConfirm,
   checkExistingEmail,
   providerLabel,
+  validatePhone,
+  formatPhone,
+  validateSmsCode,
+  DEMO_SMS_CODE,
+  SMS_CODE_LENGTH,
+  SMS_TIMEOUT_SEC,
   type AuthProvider,
 } from '../lib/validation';
 
@@ -37,6 +45,8 @@ interface AuthModalProps {
 type Touched = {
   name: boolean;
   email: boolean;
+  phone: boolean;
+  smsCode: boolean;
   password: boolean;
   confirm: boolean;
 };
@@ -44,9 +54,13 @@ type Touched = {
 const initialTouched: Touched = {
   name: false,
   email: false,
+  phone: false,
+  smsCode: false,
   password: false,
   confirm: false,
 };
+
+type SmsStatus = 'idle' | 'sending' | 'sent' | 'verifying' | 'verified' | 'expired';
 
 export default function AuthModal({
   isOpen,
@@ -63,6 +77,13 @@ export default function AuthModal({
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+
+  // SMS 본인인증 (Phase 1 데모 — Phase 2에서 실 SMS API 연동)
+  const [smsCode, setSmsCode] = useState('');
+  const [smsStatus, setSmsStatus] = useState<SmsStatus>('idle');
+  const [smsTimer, setSmsTimer] = useState(0);
+  const [smsError, setSmsError] = useState<string | null>(null);
 
   const [touched, setTouched] = useState<Touched>(initialTouched);
   const [submitting, setSubmitting] = useState(false);
@@ -85,6 +106,11 @@ export default function AuthModal({
     setPassword('');
     setConfirmPassword('');
     setName('');
+    setPhone('');
+    setSmsCode('');
+    setSmsStatus('idle');
+    setSmsTimer(0);
+    setSmsError(null);
     setTouched(initialTouched);
     setSubmitting(false);
     setSubmitNotice(null);
@@ -99,9 +125,23 @@ export default function AuthModal({
     if (isOpen) resetFormState();
   }, [initialMode, isOpen]);
 
+  // SMS 타이머 (1초 간격 카운트다운)
+  useEffect(() => {
+    if (smsStatus !== 'sent' && smsStatus !== 'verifying') return;
+    if (smsTimer <= 0) {
+      setSmsStatus('expired');
+      setSmsError('인증 시간이 만료됐어요. 다시 받아주세요.');
+      return;
+    }
+    const id = window.setTimeout(() => setSmsTimer((t) => t - 1), 1000);
+    return () => window.clearTimeout(id);
+  }, [smsStatus, smsTimer]);
+
   // Validation derived state
   const emailResult = useMemo(() => validateEmail(email), [email]);
   const nameResult = useMemo(() => validateName(name), [name]);
+  const phoneResult = useMemo(() => validatePhone(phone), [phone]);
+  const smsCodeResult = useMemo(() => validateSmsCode(smsCode), [smsCode]);
   const pwChecks = useMemo(() => evaluatePassword(password), [password]);
   const pwStrong = useMemo(() => isPasswordStrong(password), [password]);
   const confirmResult = useMemo(
@@ -127,6 +167,8 @@ export default function AuthModal({
     return (
       nameResult.valid &&
       emailResult.valid &&
+      phoneResult.valid &&
+      smsStatus === 'verified' &&
       pwStrong &&
       confirmResult.valid &&
       agreements.terms &&
@@ -202,6 +244,52 @@ export default function AuthModal({
     setSubmitNotice(
       '소셜 로그인은 현재 준비중입니다. 이메일로 로그인해 주세요.'
     );
+  };
+
+  // --- SMS 인증 (Phase 1 데모) ---
+  // Phase 2에서 외부 SMS 업체(NHN TOAST / 알리고 / CoolSMS) API 호출로 교체.
+
+  const handleRequestSms = async () => {
+    if (!phoneResult.valid || smsStatus === 'sending') return;
+    setSmsError(null);
+    setSmsCode('');
+    setSmsStatus('sending');
+    await new Promise((r) => setTimeout(r, 600));
+    setSmsStatus('sent');
+    setSmsTimer(SMS_TIMEOUT_SEC);
+  };
+
+  const handleVerifySms = async () => {
+    if (!smsCodeResult.valid || smsStatus === 'verifying') return;
+    setSmsError(null);
+    setSmsStatus('verifying');
+    await new Promise((r) => setTimeout(r, 500));
+    if (smsCode === DEMO_SMS_CODE) {
+      setSmsStatus('verified');
+      setSmsTimer(0);
+      return;
+    }
+    setSmsStatus('sent');
+    setSmsError('인증번호가 일치하지 않습니다. 다시 확인해주세요.');
+  };
+
+  const handleResetSms = () => {
+    setSmsCode('');
+    setSmsStatus('idle');
+    setSmsTimer(0);
+    setSmsError(null);
+    setTouched((t) => ({ ...t, smsCode: false }));
+  };
+
+  const handlePhoneChange = (v: string) => {
+    setPhone(formatPhone(v));
+    if (smsStatus !== 'idle') handleResetSms();
+  };
+
+  const mmss = (sec: number) => {
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
   };
 
   return (
@@ -380,6 +468,122 @@ export default function AuthModal({
                           setTouched((t) => ({ ...t, email: true }));
                         }}
                       />
+                    )}
+
+                    {mode === 'signup' && (
+                      <div className="space-y-2">
+                        <FieldShell
+                          label="휴대폰 번호"
+                          error={
+                            touched.phone && !phoneResult.valid
+                              ? phoneResult.message ?? '휴대폰 번호를 입력해주세요.'
+                              : undefined
+                          }
+                        >
+                          <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                          <input
+                            type="tel"
+                            placeholder="010-1234-5678"
+                            value={phone}
+                            onChange={(e) => handlePhoneChange(e.target.value)}
+                            onBlur={() => setTouched((t) => ({ ...t, phone: true }))}
+                            disabled={smsStatus === 'verified'}
+                            className={`${inputCls(touched.phone && !phoneResult.valid)} pr-[120px] disabled:bg-gray-50 disabled:text-gray-500`}
+                            autoComplete="tel"
+                            inputMode="numeric"
+                          />
+                          <button
+                            type="button"
+                            onClick={handleRequestSms}
+                            disabled={
+                              !phoneResult.valid ||
+                              smsStatus === 'sending' ||
+                              smsStatus === 'verified'
+                            }
+                            className={`absolute right-2 top-1/2 -translate-y-1/2 text-xs font-bold px-3 py-2 rounded-lg transition-all ${
+                              smsStatus === 'verified'
+                                ? 'bg-green-50 text-green-600 cursor-default'
+                                : !phoneResult.valid
+                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                : 'bg-blue-600 text-white hover:bg-blue-700 active:scale-[0.98]'
+                            }`}
+                          >
+                            {smsStatus === 'sending' ? (
+                              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                            ) : smsStatus === 'verified' ? (
+                              <span className="flex items-center gap-1">
+                                <ShieldCheck className="h-3.5 w-3.5" /> 인증완료
+                              </span>
+                            ) : smsStatus === 'sent' || smsStatus === 'verifying' ? (
+                              '재전송'
+                            ) : (
+                              '인증번호 받기'
+                            )}
+                          </button>
+                        </FieldShell>
+
+                        {(smsStatus === 'sent' || smsStatus === 'verifying' || smsStatus === 'expired') && (
+                          <div className="space-y-2">
+                            <div className="relative">
+                              <input
+                                type="text"
+                                placeholder="인증번호 6자리 입력"
+                                value={smsCode}
+                                onChange={(e) =>
+                                  setSmsCode(e.target.value.replace(/\D/g, '').slice(0, SMS_CODE_LENGTH))
+                                }
+                                onBlur={() => setTouched((t) => ({ ...t, smsCode: true }))}
+                                disabled={smsStatus === 'expired'}
+                                className={`${inputCls(smsStatus === 'expired' || (touched.smsCode && !smsCodeResult.valid))} pl-4 pr-[110px] tabular-nums tracking-widest disabled:bg-gray-50 disabled:text-gray-400`}
+                                inputMode="numeric"
+                                autoComplete="one-time-code"
+                                maxLength={SMS_CODE_LENGTH}
+                              />
+                              {smsStatus !== 'expired' && smsTimer > 0 && (
+                                <span className="absolute right-[96px] top-1/2 -translate-y-1/2 text-xs font-bold text-red-500 tabular-nums">
+                                  {mmss(smsTimer)}
+                                </span>
+                              )}
+                              <button
+                                type="button"
+                                onClick={handleVerifySms}
+                                disabled={!smsCodeResult.valid || smsStatus === 'verifying' || smsStatus === 'expired'}
+                                className={`absolute right-2 top-1/2 -translate-y-1/2 text-xs font-bold px-3 py-2 rounded-lg transition-all ${
+                                  smsCodeResult.valid && smsStatus !== 'expired'
+                                    ? 'bg-gray-900 text-white hover:bg-gray-700 active:scale-[0.98]'
+                                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                }`}
+                              >
+                                {smsStatus === 'verifying' ? (
+                                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                                ) : (
+                                  '인증 확인'
+                                )}
+                              </button>
+                            </div>
+                            {smsError && (
+                              <p className="text-[12px] text-red-500 flex items-center gap-1">
+                                <AlertCircle className="h-3.5 w-3.5" /> {smsError}
+                              </p>
+                            )}
+                            {!smsError && smsStatus === 'sent' && (
+                              <p className="text-[11px] text-gray-500 flex items-center gap-1">
+                                <Info className="h-3 w-3" />
+                                데모용 인증번호:{' '}
+                                <span className="font-bold text-blue-600 tabular-nums">{DEMO_SMS_CODE}</span>
+                                <span className="text-gray-400 ml-1">(Phase 2에 실 SMS로 대체 예정)</span>
+                              </p>
+                            )}
+                          </div>
+                        )}
+
+                        {smsStatus === 'verified' && (
+                          <p className="text-[12px] text-green-600 flex items-center gap-1 font-medium">
+                            <ShieldCheck className="h-3.5 w-3.5" />
+                            휴대폰 인증이 완료되었습니다.
+                          </p>
+                        )}
+                      </div>
                     )}
 
                     <FieldShell label="비밀번호">
