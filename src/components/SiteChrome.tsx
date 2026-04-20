@@ -342,17 +342,6 @@ function Footer() {
               <Link href="/community" className="hover:text-white transition-colors">고객센터</Link>
             </div>
           </div>
-          <div className="flex gap-3">
-            <div className="w-9 h-9 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 cursor-pointer transition-colors">
-              <span className="text-sm font-bold text-gray-400">B</span>
-            </div>
-            <div className="w-9 h-9 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 cursor-pointer transition-colors">
-              <span className="text-sm font-bold text-gray-400">F</span>
-            </div>
-            <div className="w-9 h-9 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 cursor-pointer transition-colors">
-              <span className="text-sm font-bold text-gray-400">Y</span>
-            </div>
-          </div>
         </div>
 
         <div className="text-[11px] md:text-xs text-gray-400 space-y-2 leading-relaxed">
@@ -360,7 +349,6 @@ function Footer() {
             <span className="font-bold text-gray-300">(주)케이비즈글로벌교육원</span>
             <span className="mx-2 text-gray-600">|</span>대표이사: 홍성석
             <span className="mx-2 text-gray-600">|</span>사업자등록번호: 631-81-04153
-            <a href="#" className="underline ml-2 hover:text-gray-300">사업자정보확인</a>
           </p>
           <p>주소: 서울특별시 영등포구 양평로 94, 3층</p>
           <p>
