@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Script from 'next/script';
 import './globals.css';
 import SiteChrome from '../src/components/SiteChrome';
 
@@ -37,8 +38,18 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const isDev = process.env.NODE_ENV === 'development';
   return (
     <html lang="ko">
+      <head>
+        {isDev && (
+          <Script
+            src="//unpkg.com/react-grab/dist/index.global.js"
+            crossOrigin="anonymous"
+            strategy="beforeInteractive"
+          />
+        )}
+      </head>
       <body className="min-h-screen bg-[#f8f9fa] font-sans antialiased">
         <SiteChrome>{children}</SiteChrome>
       </body>
