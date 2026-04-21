@@ -223,9 +223,22 @@ function Header() {
             />
           </div>
 
-          <Link href="/login" className="hidden lg:inline-flex items-center text-sm text-gray-700 hover:text-blue-600 whitespace-nowrap shrink-0">
-            로그인/회원가입
-          </Link>
+          <div className="hidden lg:flex items-center gap-5 text-sm text-gray-700 shrink-0">
+            <button
+              type="button"
+              onClick={() => openCouponModal()}
+              className="hover:text-blue-600 whitespace-nowrap"
+            >
+              쿠폰인증센터
+            </button>
+            <Link href="/events" className="hover:text-blue-600 whitespace-nowrap">
+              이벤트
+            </Link>
+            <span className="w-px h-4 bg-gray-300" aria-hidden="true"></span>
+            <Link href="/login" className="hover:text-blue-600 whitespace-nowrap">
+              로그인/회원가입
+            </Link>
+          </div>
 
           <div className="flex lg:hidden items-center gap-1">
             <button
@@ -262,8 +275,6 @@ function Header() {
 
             <div className="flex items-center gap-5 xl:gap-6 text-sm text-gray-700">
               <Link href="/certification" className="hover:text-blue-600 whitespace-nowrap font-bold text-gray-900">자격소개</Link>
-              <button onClick={() => openCouponModal()} className="hover:text-blue-600 whitespace-nowrap">쿠폰인증센터</button>
-              <Link href="/events" className="hover:text-blue-600">이벤트</Link>
               <Link href="/books" className="hover:text-blue-600">교재</Link>
               <Link href="/community" className="hover:text-blue-600">커뮤니티</Link>
               <Link href="/curriculum" className="hover:text-blue-600 whitespace-nowrap">전체 서비스</Link>
