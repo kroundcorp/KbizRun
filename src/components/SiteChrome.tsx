@@ -14,6 +14,7 @@ import {
   MessageSquare,
   Layers,
   LogIn,
+  BadgeCheck,
 } from 'lucide-react';
 import CouponModal from './CouponModal';
 import { subjects } from '../data/subjects';
@@ -70,6 +71,7 @@ function MobileDrawer({
   }, [isOpen]);
 
   const serviceItems: MobileNavItem[] = [
+    { type: 'link', label: '자격소개', to: '/certification', icon: <BadgeCheck className="h-4 w-4" /> },
     { type: 'link', label: '전체 서비스', to: '/curriculum', icon: <Layers className="h-4 w-4" /> },
     { type: 'link', label: '이벤트', to: '/events', icon: <Gift className="h-4 w-4" /> },
     { type: 'link', label: '교재', to: '/books', icon: <BookOpen className="h-4 w-4" /> },
@@ -259,6 +261,7 @@ function Header() {
             <div className="w-px h-4 bg-gray-300 mx-2 shrink-0"></div>
 
             <div className="flex items-center gap-5 xl:gap-6 text-sm text-gray-700">
+              <Link href="/certification" className="hover:text-blue-600 whitespace-nowrap font-bold text-gray-900">자격소개</Link>
               <button onClick={() => openCouponModal()} className="hover:text-blue-600 whitespace-nowrap">쿠폰인증센터</button>
               <Link href="/events" className="hover:text-blue-600">이벤트</Link>
               <Link href="/books" className="hover:text-blue-600">교재</Link>
