@@ -4,7 +4,10 @@ export interface Coupon {
   benefit: string;
   expiresAt: string;
   used: boolean;
+  kind?: 'coop';
 }
+
+export const COOP_COUPON_KIND = 'coop' as const;
 
 // Phase 2에서 Supabase 조회로 교체. 현재는 프론트 데모용.
 export const mockCoupons: Record<string, Coupon> = {
@@ -35,6 +38,22 @@ export const mockCoupons: Record<string, Coupon> = {
     benefit: '—',
     expiresAt: '2026-04-01',
     used: true,
+  },
+  'COOP-2026': {
+    code: 'COOP-2026',
+    title: '협동조합 전용 쿠폰',
+    benefit: '필기+실기 올인원 790,000원 할인 (1,290,000 → 500,000원)',
+    expiresAt: '2026-12-31',
+    used: false,
+    kind: 'coop',
+  },
+  'COOP-MEMBER-2026': {
+    code: 'COOP-MEMBER-2026',
+    title: '협동조합 조합원 쿠폰',
+    benefit: '필기+실기 올인원 790,000원 할인 (1,290,000 → 500,000원)',
+    expiresAt: '2026-12-31',
+    used: false,
+    kind: 'coop',
   },
 };
 

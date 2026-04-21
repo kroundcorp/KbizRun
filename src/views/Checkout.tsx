@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { useRouter, useParams, redirect } from 'next/navigation';
+import { useRouter, useParams, redirect, useSearchParams } from 'next/navigation';
 import {
   ChevronLeft,
   ChevronRight,
@@ -13,6 +13,7 @@ import {
   AlertCircle,
   Loader2,
   Info,
+  Ticket,
 } from 'lucide-react';
 import { getPlan } from '../data/pricing';
 import { lookupCoupon } from '../data/coupons';
@@ -52,7 +53,22 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export default function Checkout() {
   const { planId } = useParams<{ planId: string }>();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const plan = planId ? getPlan(planId) : undefined;
+
+  const coopCode = searchParams?.get('coop')?.toUpperCase() ?? null;
+  const coopVerified = useMemo(() => {
+    if (!plan?.requiresCoupon) return true;
+    if (!coopCode) return false;
+    const lookup = lookupCoupon(coopCode);
+    return lookup.status === 'success' && lookup.coupon.kind === 'coop';
+  }, [plan, coopCode]);
+
+  useEffect(() => {
+    if (plan?.requiresCoupon && !coopVerified) {
+      router.replace(`/pricing/${plan.id}`);
+    }
+  }, [plan, coopVerified, router]);
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
