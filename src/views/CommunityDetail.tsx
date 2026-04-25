@@ -26,7 +26,15 @@ export default function CommunityDetail() {
           <span className="border border-gray-200 text-gray-500 text-[10px] px-1.5 py-0.5 rounded">{post.subject}</span>
           <span
             className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${
-              post.type === '질문' ? 'bg-blue-50 text-blue-600' : post.type === '팁' ? 'bg-orange-50 text-orange-600' : 'bg-green-50 text-green-600'
+              post.type === '질문'
+                ? 'bg-blue-50 text-blue-600'
+                : post.type === '팁'
+                  ? 'bg-orange-50 text-orange-600'
+                  : post.type === '멘토링'
+                    ? 'bg-purple-50 text-purple-600'
+                    : post.type === '추천'
+                      ? 'bg-amber-50 text-amber-600'
+                      : 'bg-green-50 text-green-600'
             }`}
           >
             {post.type}

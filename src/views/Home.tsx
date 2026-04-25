@@ -61,77 +61,6 @@ const CONTENT_STYLE: Record<(typeof RECOMMENDED_CONTENT)[number]['color'], {
   slate: { decor: 'bg-slate-100', badge: 'bg-slate-100 text-slate-700', accent: 'group-hover:text-slate-700', dot: 'bg-slate-500', hover: 'hover:border-slate-300', iconBg: 'bg-slate-100 text-slate-700' },
 };
 
-function ProfessorProfile() {
-  return (
-    <div className="bg-white rounded-3xl border border-gray-200 p-6 md:p-10 lg:p-12 shadow-sm mb-12 flex flex-col md:flex-row items-center gap-6 md:gap-10">
-      {/* Left: Image */}
-      <div className="w-full md:w-1/3 flex justify-center">
-        <div className="relative w-48 h-60 sm:w-56 sm:h-72 md:w-64 md:h-80 bg-[#f0f4f8] rounded-2xl overflow-hidden border border-gray-100">
-          <img
-            src="/hong.png"
-            alt="홍순후 교수"
-            className="absolute bottom-0 w-full h-auto object-cover"
-          />
-        </div>
-      </div>
-
-      {/* Right: Content */}
-      <div className="w-full md:w-2/3">
-        <div className="mb-6 md:mb-8 text-center md:text-left">
-          <span className="text-blue-600 font-bold text-xs md:text-sm bg-blue-50 px-3 py-1 rounded-full mb-3 md:mb-4 inline-block border border-blue-100">국내 유일, 조달 전문가 검수</span>
-          <h2 className="text-2xl md:text-3xl font-black text-gray-900 mb-2 md:mb-3">홍순후 교수</h2>
-          <p className="text-lg md:text-xl font-bold text-gray-800 mb-2 md:mb-3 leading-tight">대체 불가능한 34년 경력의 조달 전문가 × AI 기술의 결합</p>
-          <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-            국내 유일, 조달 전문가 직접 검수한 콘텐츠로<br className="hidden md:block" />
-            <span className="md:hidden"> </span>시험에 나오는 것만 정확하게 학습합니다.
-          </p>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Career */}
-          <div>
-            <h3 className="font-bold text-gray-900 mb-4 border-b border-gray-200 pb-2 flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span> 약력
-            </h3>
-            <ul className="space-y-3 text-sm">
-              <li className="flex gap-3 md:gap-4"><span className="text-gray-500 w-20 md:w-24 font-mono text-xs md:text-sm shrink-0">2024 - 현재</span><span className="text-gray-800 font-medium">법무법인 이제 고문</span></li>
-              <li className="flex gap-3 md:gap-4"><span className="text-gray-500 w-20 md:w-24 font-mono text-xs md:text-sm shrink-0">2023 - 2024</span><span className="text-gray-800 font-medium">(사)정부조달컴퓨터협회 부회장</span></li>
-              <li className="flex gap-3 md:gap-4"><span className="text-gray-500 w-20 md:w-24 font-mono text-xs md:text-sm shrink-0">2018 - 2020</span><span className="text-gray-800 font-medium">조달청 조달교육원 원장</span></li>
-              <li className="flex gap-3 md:gap-4"><span className="text-gray-500 w-20 md:w-24 font-mono text-xs md:text-sm shrink-0">2017 - 2018</span><span className="text-gray-800 font-medium">조달청 조달품질원 조사분석과장</span></li>
-              <li className="flex gap-3 md:gap-4"><span className="text-gray-500 w-20 md:w-24 font-mono text-xs md:text-sm shrink-0">1989 - 2017</span><span className="text-gray-800 font-medium">조달청</span></li>
-            </ul>
-          </div>
-          
-          {/* Features */}
-          <div>
-            <h3 className="font-bold text-gray-900 mb-4 border-b border-gray-200 pb-2 flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span> 학습 시스템
-            </h3>
-            <ul className="space-y-3 text-sm">
-              <li className="flex items-start gap-2 text-gray-700">
-                <CheckCircle2 className="h-4 w-4 text-blue-500 mt-0.5 shrink-0" /> 
-                <span>핵심만 요약한 전용 교재</span>
-              </li>
-              <li className="flex items-start gap-2 text-gray-700">
-                <CheckCircle2 className="h-4 w-4 text-blue-500 mt-0.5 shrink-0" /> 
-                <span>영상 강의 중 적시 문제 출제</span>
-              </li>
-              <li className="flex items-start gap-2 text-gray-700">
-                <CheckCircle2 className="h-4 w-4 text-blue-500 mt-0.5 shrink-0" /> 
-                <span>실전과 동일한 환경의 모의고사</span>
-              </li>
-              <li className="flex items-start gap-2 text-gray-700">
-                <CheckCircle2 className="h-4 w-4 text-blue-500 mt-0.5 shrink-0" /> 
-                <span>조달 전문가의 노하우를 학습한 AI 챗봇</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function Home() {
   return (
     <main className="bg-[#f8f9fa] min-h-screen py-8">
@@ -403,21 +332,21 @@ export default function Home() {
         {/* Bottom 3 Columns Section */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6 pb-12">
 
-          {/* K-Talk */}
+          {/* Board */}
           <div className="lg:col-span-7 bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
             <div className="flex justify-between items-center mb-6">
               <div className="flex items-center gap-2">
                 <MessageCircle className="h-6 w-6 text-purple-600" />
-                <h3 className="text-xl font-bold text-gray-900">K톡</h3>
+                <h3 className="text-xl font-bold text-gray-900">게시판</h3>
                 <span className="text-gray-500 text-sm ml-1">이 문제 풀어주세요</span>
               </div>
-              <a href="#" className="text-[11px] text-gray-400 flex items-center hover:text-gray-600">
+              <Link href="/community" className="text-[11px] text-gray-400 flex items-center hover:text-gray-600">
                 바로가기 <ChevronRight className="h-3 w-3" />
-              </a>
+              </Link>
             </div>
 
             <div className="space-y-4">
-              <div className="border-b border-gray-100 pb-4 cursor-pointer group">
+              <Link href="/community/1" className="block border-b border-gray-100 pb-4 cursor-pointer group">
                 <div className="flex justify-between items-center mb-2">
                   <div className="flex items-center gap-2">
                     <span className="border border-red-200 text-red-500 text-[10px] px-1.5 py-0.5 rounded">제1장</span>
@@ -430,9 +359,9 @@ export default function Home() {
                   물품구매계약 입찰 및 낙찰제도 구분 기준
                 </h4>
                 <p className="text-sm text-gray-500 truncate">정부계약 개요와 입찰집행 절차가 실제 계약관리로 이어지는 흐름이 헷갈려서...</p>
-              </div>
+              </Link>
 
-              <div className="pt-2 cursor-pointer group">
+              <Link href="/community/2" className="block pt-2 cursor-pointer group">
                 <div className="flex justify-between items-center mb-2">
                   <div className="flex items-center gap-2">
                     <span className="border border-orange-200 text-orange-500 text-[10px] px-1.5 py-0.5 rounded">제3장</span>
@@ -445,14 +374,14 @@ export default function Home() {
                   예정가격 기초조사와 원가계산 용역의뢰 차이
                 </h4>
                 <p className="text-sm text-gray-500 truncate">예정가격 결정기준을 잡을 때 기초조사와 용역의뢰를 어떻게 구분하는지...</p>
-              </div>
+              </Link>
             </div>
           </div>
 
           {/* Mentoring & Tip Stack */}
           <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 md:gap-6">
             {/* Mentoring */}
-            <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm flex-1 relative overflow-hidden group cursor-pointer">
+            <Link href="/community/5" className="block bg-white rounded-2xl border border-gray-200 p-6 shadow-sm flex-1 relative overflow-hidden group cursor-pointer">
               <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-bl-full -z-10 opacity-50"></div>
               <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center gap-2">
@@ -475,10 +404,10 @@ export default function Home() {
                   미리보기 <PlayCircle className="h-3 w-3" />
                 </button>
               </div>
-            </div>
+            </Link>
 
             {/* Tip */}
-            <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm flex-1 relative overflow-hidden group cursor-pointer">
+            <Link href="/community/6" className="block bg-white rounded-2xl border border-gray-200 p-6 shadow-sm flex-1 relative overflow-hidden group cursor-pointer">
               <div className="absolute top-0 right-0 w-32 h-32 bg-orange-50 rounded-bl-full -z-10 opacity-50"></div>
               <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center gap-2">
@@ -498,14 +427,10 @@ export default function Home() {
                   <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div> 물품구매계약, 예정가격, 낙찰자 선정
                 </span>
               </div>
-            </div>
+            </Link>
           </div>
 
         </div>
-
-        {/* Professor Profile Section */}
-        <ProfessorProfile />
-
       </div>
     </main>
   );

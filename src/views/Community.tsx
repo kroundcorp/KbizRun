@@ -4,9 +4,9 @@ import React, { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { MessageCircle, Search, Plus } from 'lucide-react';
 import { posts } from '../data/community';
-import { subjects } from '../data/subjects';
 
-const TYPES = ['전체', '질문', '팁', '후기'] as const;
+const TYPES = ['전체', '질문', '팁', '후기', '멘토링', '추천'] as const;
+const BOARD_CATEGORIES = ['전체', '제1장', '제3장', '제4장', '멘토링', '추천', '합격후기'] as const;
 
 export default function Community() {
   const [type, setType] = useState<(typeof TYPES)[number]>('전체');
@@ -28,9 +28,9 @@ export default function Community() {
         <div>
           <p className="text-blue-600 font-bold text-xs mb-1">COMMUNITY</p>
           <h1 className="text-3xl font-black text-gray-900 mb-1 flex items-center gap-3">
-            <MessageCircle className="h-7 w-7 text-purple-600" /> K톡
+            <MessageCircle className="h-7 w-7 text-purple-600" /> 게시판
           </h1>
-          <p className="text-gray-500">전문가와 합격자가 함께하는 조달 커뮤니티</p>
+          <p className="text-gray-500">질문, 멘토링, 추천 콘텐츠가 모이는 조달 학습 게시판</p>
         </div>
         <button className="bg-blue-600 text-white font-bold px-5 py-3 rounded-xl flex items-center gap-2 hover:bg-blue-700">
           <Plus className="h-4 w-4" /> 글쓰기
@@ -57,25 +57,17 @@ export default function Community() {
           </div>
 
           <div className="bg-white rounded-2xl border border-gray-200 p-5">
-            <p className="text-xs text-gray-400 font-bold mb-3">과목</p>
+            <p className="text-xs text-gray-400 font-bold mb-3">카테고리</p>
             <div className="space-y-1">
-              <button
-                onClick={() => setSubject('전체')}
-                className={`w-full text-left text-sm px-3 py-2 rounded-lg ${
-                  subject === '전체' ? 'bg-blue-50 text-blue-700 font-bold' : 'text-gray-600 hover:bg-gray-50'
-                }`}
-              >
-                전체
-              </button>
-              {subjects.map((s) => (
+              {BOARD_CATEGORIES.map((s) => (
                 <button
-                  key={s.id}
-                  onClick={() => setSubject(s.name)}
+                  key={s}
+                  onClick={() => setSubject(s)}
                   className={`w-full text-left text-sm px-3 py-2 rounded-lg ${
-                    subject === s.name ? 'bg-blue-50 text-blue-700 font-bold' : 'text-gray-600 hover:bg-gray-50'
+                    subject === s ? 'bg-blue-50 text-blue-700 font-bold' : 'text-gray-600 hover:bg-gray-50'
                   }`}
                 >
-                  {s.name}
+                  {s}
                 </button>
               ))}
             </div>
@@ -107,7 +99,15 @@ export default function Community() {
                   <span className="border border-gray-200 text-gray-500 text-[10px] px-1.5 py-0.5 rounded">{p.subject}</span>
                   <span
                     className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${
-                      p.type === '질문' ? 'bg-blue-50 text-blue-600' : p.type === '팁' ? 'bg-orange-50 text-orange-600' : 'bg-green-50 text-green-600'
+                      p.type === '질문'
+                        ? 'bg-blue-50 text-blue-600'
+                        : p.type === '팁'
+                          ? 'bg-orange-50 text-orange-600'
+                          : p.type === '멘토링'
+                            ? 'bg-purple-50 text-purple-600'
+                            : p.type === '추천'
+                              ? 'bg-amber-50 text-amber-600'
+                              : 'bg-green-50 text-green-600'
                     }`}
                   >
                     {p.type}

@@ -237,6 +237,9 @@ function MobileDrawer({
 function Header() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { user, loading } = useAuth();
+  const pathname = usePathname() ?? '';
+  const isHomeActive = pathname === '/';
+  const isCertificationActive = pathname.startsWith('/certification');
 
   return (
     <>
@@ -304,10 +307,20 @@ function Header() {
         <div className="hidden lg:block border-t border-gray-100">
           <div className="max-w-[1200px] mx-auto px-4 flex items-center gap-4 py-2.5">
             <div className="flex items-center gap-2 shrink-0">
-              <Link href="/" className="bg-[#2563eb] text-white px-5 py-2 rounded-full text-sm font-bold hover:bg-blue-700 transition-colors">
+              <Link
+                href="/"
+                className={`px-5 py-2 rounded-full text-sm font-bold transition-colors ${
+                  isHomeActive ? 'bg-[#2563eb] text-white hover:bg-blue-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
                 홈
               </Link>
-              <Link href="/certification" className="bg-[#2563eb] text-white px-5 py-2 rounded-full text-sm font-bold">
+              <Link
+                href="/certification"
+                className={`px-5 py-2 rounded-full text-sm font-bold transition-colors ${
+                  isCertificationActive ? 'bg-[#2563eb] text-white hover:bg-blue-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
                 자격소개
               </Link>
             </div>

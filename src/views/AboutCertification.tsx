@@ -17,6 +17,7 @@ import {
   Landmark,
   ChevronRight,
 } from 'lucide-react';
+import ProfessorProfile from '../components/ProfessorProfile';
 
 const TARGETS = [
   {
@@ -164,6 +165,15 @@ export default function AboutCertification() {
             정리하고 체계화하는 능력을 검정합니다.
           </p>
         </div>
+      </section>
+
+      {/* 교수 소개 */}
+      <section className="mb-10 md:mb-14">
+        <div className="mb-5">
+          <p className="text-blue-600 font-bold text-sm mb-2">EXPERT</p>
+          <h2 className="text-2xl md:text-3xl font-black text-gray-900">조달 전문가와 함께하는 학습</h2>
+        </div>
+        <ProfessorProfile />
       </section>
 
       {/* 자격 신설의 배경 */}
