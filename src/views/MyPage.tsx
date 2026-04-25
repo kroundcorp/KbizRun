@@ -2,26 +2,79 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { User, Book, FileText, Heart, Bell, Settings, LogOut, ChevronRight, Package, Truck } from 'lucide-react';
-import { subjects } from '../data/subjects';
+import { useSearchParams } from 'next/navigation';
 import {
+  Bell,
+  ChevronRight,
+  CreditCard,
+  FileText,
+  GraduationCap,
+  Heart,
+  HelpCircle,
+  LogOut,
+  Package,
+  Settings,
+  ShoppingCart,
+  Ticket,
+  Truck,
+  User,
+} from 'lucide-react';
+import { getBookById } from '../data/books';
+import { subjects } from '../data/subjects';
+import { videos } from '../data/videos';
+import {
+  getBookCart,
   getBookOrders,
+  getCartTotal,
   getDemoProfile,
   getExamAttempts,
   getLearningSummary,
   getSubjectProgress,
   getWrongNoteCount,
+  type BookCartItem,
   type BookOrder,
   type DemoProfile,
   type ExamAttempt,
 } from '../lib/demoStore';
 
-const TABS = ['학습 현황', '이용권', '오답노트', '알림', '설정'] as const;
+const TABS = [
+  '내 강의실',
+  '프로필',
+  '찜한 교재',
+  '쿠폰',
+  '이용 가이드',
+  '구매내역',
+  '결제내역',
+  '장바구니',
+  '내 주문',
+  '이용권',
+  '오답노트',
+  '알림',
+  '설정',
+] as const;
+
+const TAB_BY_QUERY: Record<string, (typeof TABS)[number]> = {
+  classroom: '내 강의실',
+  profile: '프로필',
+  favorites: '찜한 교재',
+  coupons: '쿠폰',
+  guide: '이용 가이드',
+  purchases: '구매내역',
+  payments: '결제내역',
+  cart: '장바구니',
+  orders: '내 주문',
+  plan: '이용권',
+  wrong: '오답노트',
+  notifications: '알림',
+  settings: '설정',
+};
 
 export default function MyPage() {
-  const [tab, setTab] = useState<(typeof TABS)[number]>('학습 현황');
+  const searchParams = useSearchParams();
+  const [tab, setTab] = useState<(typeof TABS)[number]>('내 강의실');
   const [profile, setProfile] = useState<DemoProfile | null>(null);
   const [orders, setOrders] = useState<BookOrder[]>([]);
+  const [cart, setCart] = useState<BookCartItem[]>([]);
   const [attempts, setAttempts] = useState<ExamAttempt[]>([]);
   const [wrongCount, setWrongCount] = useState(0);
   const [summary, setSummary] = useState({
@@ -34,10 +87,18 @@ export default function MyPage() {
   useEffect(() => {
     setProfile(getDemoProfile());
     setOrders(getBookOrders());
+    setCart(getBookCart());
     setAttempts(getExamAttempts());
     setWrongCount(getWrongNoteCount());
     setSummary(getLearningSummary());
   }, []);
+
+  useEffect(() => {
+    const requestedTab = searchParams.get('tab');
+    if (requestedTab && TAB_BY_QUERY[requestedTab]) {
+      setTab(TAB_BY_QUERY[requestedTab]);
+    }
+  }, [searchParams]);
 
   const subjectProgress = useMemo(
     () => subjects.map((subject) => ({ ...subject, progress: getSubjectProgress(subject.id) })),
@@ -63,6 +124,7 @@ export default function MyPage() {
 
   const latestAttempt = attempts[0];
   const currentProfile = profile ?? getDemoProfile();
+  const cartTotal = getCartTotal(cart);
 
   return (
     <main className="max-w-[1200px] mx-auto px-4 py-10">
@@ -80,8 +142,15 @@ export default function MyPage() {
           </div>
 
           <div className="bg-white rounded-3xl border border-gray-200 p-2">
-            {[
-              { t: '학습 현황', i: <Book className="h-4 w-4" /> },
+              {[
+              { t: '내 강의실', i: <GraduationCap className="h-4 w-4" /> },
+              { t: '프로필', i: <User className="h-4 w-4" /> },
+              { t: '찜한 교재', i: <Heart className="h-4 w-4" /> },
+              { t: '쿠폰', i: <Ticket className="h-4 w-4" /> },
+              { t: '이용 가이드', i: <HelpCircle className="h-4 w-4" /> },
+              { t: '구매내역', i: <Package className="h-4 w-4" /> },
+              { t: '결제내역', i: <CreditCard className="h-4 w-4" /> },
+              { t: '장바구니', i: <ShoppingCart className="h-4 w-4" /> },
               { t: '이용권', i: <FileText className="h-4 w-4" /> },
               { t: '오답노트', i: <Heart className="h-4 w-4" /> },
               { t: '알림', i: <Bell className="h-4 w-4" /> },
@@ -106,7 +175,7 @@ export default function MyPage() {
         <section className="col-span-12 lg:col-span-9">
           <h1 className="text-2xl font-black text-gray-900 mb-6">마이페이지 · {tab}</h1>
 
-          {tab === '학습 현황' && (
+          {tab === '내 강의실' && (
             <>
               <div className="grid grid-cols-3 gap-6 mb-8">
                 {[
@@ -118,6 +187,36 @@ export default function MyPage() {
                     <p className="text-xs text-gray-500 mb-1">{k.t}</p>
                     <p className="text-2xl font-black text-gray-900">{k.v}</p>
                   </div>
+                ))}
+              </div>
+
+              <div className="bg-white rounded-3xl border border-gray-200 p-6 mb-8">
+                <div className="flex items-center justify-between mb-5">
+                  <h2 className="font-bold text-gray-900">영상 강의</h2>
+                  <Link href="/lectures" className="text-sm text-blue-600 font-bold flex items-center hover:underline">
+                    영상 강의 전체 보기 <ChevronRight className="h-4 w-4" />
+                  </Link>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {[
+                    ['필기', '기본이론 · 핵심요약+문제풀이(CBT, 객관식) · 모의고사&최종마무리'],
+                    ['실기', '기본이론 · 핵심요약+문제풀이(필답형) · 모의고사&최종마무리'],
+                  ].map(([title, desc]) => (
+                    <Link key={title} href="/lectures" className="rounded-2xl bg-gray-50 border border-gray-100 p-4 hover:border-blue-200">
+                      <p className="font-black text-gray-900 mb-1">{title}</p>
+                      <p className="text-xs text-gray-500 leading-relaxed">{desc}</p>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              <h2 className="font-bold text-gray-900 mb-4">최근 강의</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8">
+                {videos.slice(0, 4).map((video) => (
+                  <Link key={video.id} href={`/video/${video.id}`} className="bg-white rounded-2xl border border-gray-200 p-5 hover:border-blue-300">
+                    <p className="font-bold text-gray-900 mb-1">{video.title}</p>
+                    <p className="text-xs text-gray-500">{video.instructor} · {Math.ceil(video.durationSec / 60)}분</p>
+                  </Link>
                 ))}
               </div>
 
@@ -144,6 +243,173 @@ export default function MyPage() {
                 ))}
               </div>
             </>
+          )}
+
+          {tab === '프로필' && (
+            <div className="bg-white rounded-3xl border border-gray-200 p-8 space-y-5">
+              <h2 className="font-black text-gray-900 mb-4">프로필 정보</h2>
+              {[
+                ['이름', currentProfile.name],
+                ['이메일', currentProfile.email],
+                ['휴대폰', currentProfile.phone],
+                ['현재 이용권', currentProfile.planName],
+                ['이용권 만료일', formatDate(currentProfile.planExpiresAt)],
+              ].map(([label, value]) => (
+                <div key={label} className="flex justify-between items-center pb-4 border-b border-gray-100 last:border-b-0">
+                  <span className="font-bold text-gray-700 text-sm">{label}</span>
+                  <span className="text-sm text-gray-500">{value}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {tab === '찜한 교재' && (
+            <div className="bg-white rounded-3xl border border-gray-200 p-10 text-center">
+              <Heart className="h-10 w-10 text-gray-300 mx-auto mb-4" />
+              <p className="font-bold text-gray-900 mb-2">아직 찜한 교재가 없습니다.</p>
+              <p className="text-sm text-gray-500 mb-5">관심 있는 표준교재와 문제집을 찜해두고 다시 확인하세요.</p>
+              <Link href="/books" className="inline-flex bg-blue-600 text-white font-bold px-5 py-3 rounded-xl hover:bg-blue-700">
+                교재 둘러보기
+              </Link>
+            </div>
+          )}
+
+          {tab === '쿠폰' && (
+            <div className="bg-white rounded-3xl border border-gray-200 p-8">
+              <h2 className="font-black text-gray-900 mb-4">쿠폰</h2>
+              <div className="rounded-2xl bg-gray-50 border border-gray-100 p-5 mb-4">
+                <p className="font-bold text-gray-900">보유 쿠폰 0건</p>
+                <p className="text-sm text-gray-500 mt-1">쿠폰 인증센터에서 발급받은 쿠폰을 등록할 수 있습니다.</p>
+              </div>
+              <Link href="/events" className="inline-flex bg-gray-900 text-white font-bold px-5 py-3 rounded-xl hover:bg-gray-700">
+                이벤트/쿠폰 확인
+              </Link>
+            </div>
+          )}
+
+          {tab === '이용 가이드' && (
+            <div className="bg-white rounded-3xl border border-gray-200 p-8">
+              <h2 className="font-black text-gray-900 mb-5">이용 가이드</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[
+                  ['영상 강의', '필기/실기 강의는 기본이론 → 핵심요약+문제풀이 → 모의고사 순서로 수강하세요.', '/lectures'],
+                  ['예상문제', '시험 모드와 학습 모드를 선택해 점수 확인 또는 즉시 해설 확인이 가능합니다.', '/free-mock'],
+                  ['교재 구매', '표준교재와 요약 교재를 장바구니에 담아 주문할 수 있습니다.', '/books'],
+                  ['오답노트', '틀린 문제는 시험 결과 화면과 마이페이지에서 다시 확인할 수 있습니다.', '/mypage?tab=wrong'],
+                ].map(([title, desc, href]) => (
+                  <Link key={title} href={href} className="rounded-2xl bg-gray-50 border border-gray-100 p-5 hover:border-blue-200">
+                    <p className="font-bold text-gray-900 mb-2">{title}</p>
+                    <p className="text-sm text-gray-500 leading-relaxed">{desc}</p>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {(tab === '구매내역' || tab === '내 주문') && (
+            <div className="bg-white rounded-3xl border border-gray-200 p-8">
+              <h2 className="font-black text-gray-900 mb-4 flex items-center gap-2">
+                <Package className="h-5 w-5 text-blue-500" />
+                {tab}
+              </h2>
+              {orders.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-sm text-gray-500 mb-4">아직 구매 내역이 없습니다.</p>
+                  <Link href="/books" className="inline-flex bg-gray-900 text-white font-bold px-5 py-3 rounded-xl hover:bg-gray-700">
+                    교재 구매하기
+                  </Link>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {orders.map((order) => (
+                    <div key={order.orderNo} className="border border-gray-200 rounded-2xl p-5">
+                      <div className="flex items-start justify-between gap-4 mb-3">
+                        <div>
+                          <p className="font-black text-gray-900">{order.orderNo}</p>
+                          <p className="text-xs text-gray-500">{formatDate(order.createdAt)} · {order.items.length}종</p>
+                        </div>
+                        <span className="inline-flex items-center gap-1 bg-blue-50 text-blue-700 text-xs font-bold px-3 py-1 rounded-full">
+                          <Truck className="h-3.5 w-3.5" />
+                          배송 준비중
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-700 mb-2">
+                        {order.items[0]?.title}
+                        {order.items.length > 1 ? ` 외 ${order.items.length - 1}건` : ''}
+                      </p>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-500">결제금액</span>
+                        <span className="font-bold text-gray-900">₩{order.totalAmount.toLocaleString()}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {tab === '결제내역' && (
+            <div className="bg-white rounded-3xl border border-gray-200 p-8">
+              <h2 className="font-black text-gray-900 mb-4 flex items-center gap-2">
+                <CreditCard className="h-5 w-5 text-blue-500" />
+                결제내역
+              </h2>
+              {orders.length === 0 ? (
+                <p className="text-sm text-gray-500">아직 결제 내역이 없습니다.</p>
+              ) : (
+                <div className="divide-y divide-gray-100">
+                  {orders.map((order) => (
+                    <div key={order.orderNo} className="py-4 flex items-center justify-between">
+                      <div>
+                        <p className="font-bold text-gray-900">{order.orderNo}</p>
+                        <p className="text-xs text-gray-500">{formatDate(order.createdAt)} · {order.payMethod}</p>
+                      </div>
+                      <span className="font-black text-gray-900">₩{order.totalAmount.toLocaleString()}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {tab === '장바구니' && (
+            <div className="bg-white rounded-3xl border border-gray-200 p-8">
+              <h2 className="font-black text-gray-900 mb-4 flex items-center gap-2">
+                <ShoppingCart className="h-5 w-5 text-blue-500" />
+                장바구니
+              </h2>
+              {cart.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-sm text-gray-500 mb-4">장바구니가 비어 있습니다.</p>
+                  <Link href="/books" className="inline-flex bg-gray-900 text-white font-bold px-5 py-3 rounded-xl hover:bg-gray-700">
+                    교재 담으러 가기
+                  </Link>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {cart.map((item) => {
+                    const book = getBookById(item.bookId);
+                    if (!book) return null;
+                    return (
+                      <div key={item.bookId} className="flex items-center justify-between rounded-2xl border border-gray-200 p-4">
+                        <div>
+                          <p className="font-bold text-gray-900">{book.title}</p>
+                          <p className="text-xs text-gray-500">수량 {item.quantity}개</p>
+                        </div>
+                        <span className="font-black text-gray-900">₩{(book.price * item.quantity).toLocaleString()}</span>
+                      </div>
+                    );
+                  })}
+                  <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                    <span className="font-bold text-gray-700">합계</span>
+                    <span className="text-xl font-black text-gray-900">₩{cartTotal.toLocaleString()}</span>
+                  </div>
+                  <Link href="/books/cart" className="block text-center bg-blue-600 text-white font-bold px-5 py-3 rounded-xl hover:bg-blue-700">
+                    장바구니 상세 보기
+                  </Link>
+                </div>
+              )}
+            </div>
           )}
 
           {tab === '이용권' && (

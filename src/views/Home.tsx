@@ -4,27 +4,61 @@ import React from 'react';
 import {
   ChevronRight, ChevronDown,
   FileText, CheckCircle2, BookOpen, Gift,
-  MessageCircle, PlayCircle, Star, Download,
-  Target, Trophy,
+  MessageCircle, PlayCircle, Scale,
 } from 'lucide-react';
 import Link from 'next/link';
 import HeroBanner from '../components/HeroBanner';
-import { steps, type StepColor } from '../data/steps';
 
-const STEP_STYLE: Record<StepColor, {
+const RECOMMENDED_CONTENT = [
+  {
+    label: '제1장',
+    title: '물품구매계약 일반',
+    subtitle: '정부계약의 개요부터 계약 이행관리까지',
+    tagline: '입찰·낙찰·계약관리 기본기를 먼저 정리',
+    tags: ['정부계약', '입찰집행', '계약관리'],
+    icon: <BookOpen className="h-5 w-5" />,
+    color: 'blue',
+    count: '4개 목차',
+  },
+  {
+    label: '제3장',
+    title: '예정가격작성 실무',
+    subtitle: '예정가격 결정기준과 기초조사',
+    tagline: '원가계산 용역의뢰까지 실무 흐름 이해',
+    tags: ['예정가격', '기초조사', '원가계산'],
+    icon: <FileText className="h-5 w-5" />,
+    color: 'green',
+    count: '3개 목차',
+  },
+  {
+    label: '제4장',
+    title: '주요 낙찰자 선정 제도',
+    subtitle: '적격심사·협상계약·경쟁적 대화',
+    tagline: '낙찰자 선정 방식별 절차와 평가 포인트 비교',
+    tags: ['적격심사', '협상계약', '경쟁적대화'],
+    icon: <CheckCircle2 className="h-5 w-5" />,
+    color: 'orange',
+    count: '3개 제도',
+  },
+  {
+    label: '부록',
+    title: '공공조달 법률 이해',
+    subtitle: '국가·지방계약 및 관련 법령 비교',
+    tagline: '공공계약 민법, 조달사업법, 전자조달법까지 정리',
+    tags: ['국가계약법', '지방계약법', '전자조달'],
+    icon: <Scale className="h-5 w-5" />,
+    color: 'slate',
+    count: '6개 목차',
+  },
+] as const;
+
+const CONTENT_STYLE: Record<(typeof RECOMMENDED_CONTENT)[number]['color'], {
   decor: string; badge: string; accent: string; dot: string; hover: string; iconBg: string;
 }> = {
   blue: { decor: 'bg-blue-50', badge: 'bg-blue-50 text-blue-600', accent: 'group-hover:text-blue-600', dot: 'bg-blue-500', hover: 'hover:border-blue-300', iconBg: 'bg-blue-50 text-blue-500' },
-  orange: { decor: 'bg-orange-50', badge: 'bg-orange-50 text-orange-500', accent: 'group-hover:text-orange-500', dot: 'bg-orange-500', hover: 'hover:border-orange-300', iconBg: 'bg-orange-50 text-orange-500' },
   green: { decor: 'bg-green-50', badge: 'bg-green-50 text-green-600', accent: 'group-hover:text-green-600', dot: 'bg-green-500', hover: 'hover:border-green-300', iconBg: 'bg-green-50 text-green-600' },
-  red: { decor: 'bg-red-50', badge: 'bg-red-50 text-red-500', accent: 'group-hover:text-red-500', dot: 'bg-red-500', hover: 'hover:border-red-300', iconBg: 'bg-red-50 text-red-500' },
-};
-
-const STEP_ICON: Record<string, React.ReactNode> = {
-  theory: <FileText className="h-5 w-5" />,
-  'by-area': <Target className="h-5 w-5" />,
-  practice: <CheckCircle2 className="h-5 w-5" />,
-  final: <Trophy className="h-5 w-5" />,
+  orange: { decor: 'bg-orange-50', badge: 'bg-orange-50 text-orange-500', accent: 'group-hover:text-orange-500', dot: 'bg-orange-500', hover: 'hover:border-orange-300', iconBg: 'bg-orange-50 text-orange-500' },
+  slate: { decor: 'bg-slate-100', badge: 'bg-slate-100 text-slate-700', accent: 'group-hover:text-slate-700', dot: 'bg-slate-500', hover: 'hover:border-slate-300', iconBg: 'bg-slate-100 text-slate-700' },
 };
 
 function ProfessorProfile() {
@@ -155,69 +189,65 @@ export default function Home() {
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
             <h3 className="font-bold text-lg text-gray-900 mb-5">표준교재</h3>
             
-            <div className="grid grid-cols-2 gap-3 mb-4">
+            <div className="space-y-2">
               <Link href="/books" className="bg-gray-50 rounded-xl p-3 flex items-center gap-2 cursor-pointer hover:bg-gray-100">
                 <div className="bg-blue-100 text-blue-600 text-[10px] font-bold px-1.5 py-0.5 rounded">기본</div>
-                <span className="text-sm font-medium text-gray-800 leading-tight">공공조달<br/>표준교재</span>
+                <span className="text-sm font-medium text-gray-800 leading-tight">공공조달 표준교재</span>
               </Link>
               <Link href="/books" className="bg-gray-50 rounded-xl p-3 flex items-center gap-2 cursor-pointer hover:bg-gray-100">
                 <div className="bg-blue-100 text-blue-600 text-[10px] font-bold px-1.5 py-0.5 rounded">요약</div>
-                <span className="text-sm font-medium text-gray-800 leading-tight">핵심요약<br/>교재</span>
-              </Link>
-            </div>
-            
-            <div className="space-y-2">
-              <Link href="/books" className="bg-gray-50 rounded-xl p-3.5 flex items-center gap-3 cursor-pointer hover:bg-gray-100">
-                <FileText className="h-5 w-5 text-blue-400" />
-                <span className="text-sm font-medium text-gray-800">장별 학습 목차</span>
-              </Link>
-              <Link href="/books" className="bg-gray-50 rounded-xl p-3.5 flex items-center gap-3 cursor-pointer hover:bg-gray-100">
-                <CheckCircle2 className="h-5 w-5 text-green-500" />
-                <span className="text-sm font-medium text-gray-800">최신 개정 반영</span>
+                <span className="text-sm font-medium text-gray-800 leading-tight">핵심요약 교재</span>
               </Link>
             </div>
           </div>
 
           {/* Card 2: 예상문제 */}
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-            <h3 className="font-bold text-lg text-gray-900 mb-5">예상문제</h3>
+            <h3 className="font-bold text-lg text-gray-900 mb-5">📝 예상문제</h3>
             
-            <div className="grid grid-cols-2 gap-y-6 gap-x-2">
-              <Link href="/free-mock" className="flex items-center gap-2 cursor-pointer group">
-                <span className="text-xl group-hover:scale-110 transition-transform">⭐</span>
-                <span className="text-sm font-medium text-gray-800 group-hover:text-blue-600">기출유사문제</span>
+            <div className="space-y-3">
+              <Link href="/free-mock" className="block rounded-xl bg-gray-50 p-3.5 hover:bg-gray-100 group">
+                <p className="text-sm font-bold text-gray-900 group-hover:text-blue-600 mb-1">시험 모드</p>
+                <p className="text-xs text-gray-500 leading-relaxed">
+                  3문제를 모두 푼 후 채점합니다.<br />
+                  최종 점수와 오답노트를 확인할 수 있어요.
+                </p>
               </Link>
-              <Link href="/free-mock" className="flex items-center gap-2 cursor-pointer group">
-                <span className="text-xl group-hover:scale-110 transition-transform">🎯</span>
-                <span className="text-sm font-medium text-gray-800 group-hover:text-blue-600">예상문제</span>
-              </Link>
-              <Link href="/free-mock" className="flex items-center gap-2 cursor-pointer group col-span-2">
-                <span className="text-xl group-hover:scale-110 transition-transform">👑</span>
-                <span className="text-sm font-medium text-gray-800 group-hover:text-blue-600">핵심 유형 공략</span>
+              <Link href="/free-mock" className="block rounded-xl bg-gray-50 p-3.5 hover:bg-gray-100 group">
+                <p className="text-sm font-bold text-gray-900 group-hover:text-blue-600 mb-1">학습 모드</p>
+                <p className="text-xs text-gray-500 leading-relaxed">
+                  문제를 풀 때마다 바로 정답과 해설을 확인합니다.<br />
+                  틀린 문제만 모아서 복습할 수 있어요.
+                </p>
               </Link>
             </div>
           </div>
 
           {/* Card 3: 영상 강의 */}
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-            <h3 className="font-bold text-lg text-gray-900 mb-5">영상 강의</h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-bold text-lg text-gray-900">영상 강의</h3>
+              <Link href="/lectures" className="text-[11px] text-blue-600 font-bold flex items-center hover:underline">
+                전체 보기 <ChevronRight className="h-3 w-3" />
+              </Link>
+            </div>
             
-            <div className="grid grid-cols-2 gap-y-6 gap-x-2">
-              <Link href="/curriculum" className="flex items-center gap-2 cursor-pointer group">
-                <span className="text-xl group-hover:scale-110 transition-transform">📋</span>
-                <span className="text-sm font-medium text-gray-800 group-hover:text-blue-600 leading-tight">정규<br/>이론강의</span>
+            <div className="space-y-3">
+              <Link href="/lectures" className="block rounded-xl bg-gray-50 p-3.5 hover:bg-gray-100 group">
+                <p className="text-sm font-black text-gray-900 group-hover:text-blue-600 mb-2">필기</p>
+                <ul className="space-y-1 text-xs text-gray-500 leading-relaxed">
+                  <li>- 기본이론</li>
+                  <li>- 핵심요약+문제풀이(CBT, 객관식)</li>
+                  <li>- 모의고사&최종마무리</li>
+                </ul>
               </Link>
-              <Link href="/curriculum" className="flex items-center gap-2 cursor-pointer group">
-                <span className="text-xl group-hover:scale-110 transition-transform">📙</span>
-                <span className="text-sm font-medium text-gray-800 group-hover:text-blue-600">핵심 요약강의</span>
-              </Link>
-              <Link href="/curriculum" className="flex items-center gap-2 cursor-pointer group">
-                <span className="text-xl group-hover:scale-110 transition-transform">📘</span>
-                <span className="text-sm font-medium text-gray-800 group-hover:text-blue-600">문제풀이 강의</span>
-              </Link>
-              <Link href="/curriculum" className="flex items-center gap-2 cursor-pointer group">
-                <span className="text-xl group-hover:scale-110 transition-transform">📕</span>
-                <span className="text-sm font-medium text-gray-800 group-hover:text-blue-600">파이널 특강</span>
+              <Link href="/lectures" className="block rounded-xl bg-gray-50 p-3.5 hover:bg-gray-100 group">
+                <p className="text-sm font-black text-gray-900 group-hover:text-blue-600 mb-2">실기</p>
+                <ul className="space-y-1 text-xs text-gray-500 leading-relaxed">
+                  <li>- 기본이론</li>
+                  <li>- 핵심요약+문제풀이(필답형)</li>
+                  <li>- 모의고사&최종마무리</li>
+                </ul>
               </Link>
             </div>
           </div>
@@ -261,47 +291,47 @@ export default function Home() {
 
         {/* Quick Links Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 pt-4">
-          <Link href="/subject/procurement-laws" className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm flex items-center justify-between cursor-pointer group hover:border-blue-200">
+          <Link href="/curriculum" className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm flex items-center justify-between cursor-pointer group hover:border-blue-200">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
                 <FileText className="h-5 w-5 text-green-500" />
               </div>
               <div>
-                <h4 className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">영역별 학습</h4>
-                <p className="text-xs text-gray-500">국내최다 문제은행</p>
+                <h4 className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">제1장 물품구매계약 일반</h4>
+                <p className="text-xs text-gray-500">정부계약·입찰·계약관리 기초</p>
               </div>
             </div>
             <ChevronRight className="h-5 w-5 text-gray-300 group-hover:text-blue-500" />
           </Link>
           
-          <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm flex items-center justify-between cursor-pointer group hover:border-blue-200">
+          <Link href="/curriculum" className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm flex items-center justify-between cursor-pointer group hover:border-blue-200">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
                 <FileText className="h-5 w-5 text-blue-500" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h4 className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">최신 개정법령</h4>
+                  <h4 className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">제3장 예정가격작성 실무</h4>
                   <span className="bg-green-100 text-green-600 text-[10px] font-bold px-1.5 py-0.5 rounded">NEW</span>
                 </div>
-                <p className="text-xs text-gray-500">반영 자료 완비</p>
+                <p className="text-xs text-gray-500">결정기준·기초조사·원가계산</p>
               </div>
             </div>
             <ChevronRight className="h-5 w-5 text-gray-300 group-hover:text-blue-500" />
-          </div>
+          </Link>
 
-          <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm flex items-center justify-between cursor-pointer group hover:border-blue-200">
+          <Link href="/curriculum" className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm flex items-center justify-between cursor-pointer group hover:border-blue-200">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-yellow-50 rounded-lg flex items-center justify-center">
                 <MessageCircle className="h-5 w-5 text-yellow-500" />
               </div>
               <div>
-                <h4 className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">서비스 안내</h4>
-                <p className="text-xs text-gray-500">합격률 올리는 활용법</p>
+                <h4 className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">제4장 낙찰자 선정 제도</h4>
+                <p className="text-xs text-gray-500">적격심사·협상·경쟁적 대화</p>
               </div>
             </div>
             <ChevronRight className="h-5 w-5 text-gray-300 group-hover:text-blue-500" />
-          </div>
+          </Link>
         </div>
       </div>
 
@@ -311,7 +341,7 @@ export default function Home() {
           <div className="flex justify-between items-end mb-6">
             <div className="flex items-baseline gap-3 flex-wrap">
               <h2 className="text-2xl font-bold text-gray-900">추천 콘텐츠</h2>
-              <p className="text-gray-500 text-sm">빈틈없는 <span className="font-bold text-gray-700">4단계 시험대비 전략</span></p>
+              <p className="text-gray-500 text-sm">실제 목차 기반 <span className="font-bold text-gray-700">10장 + 부록 학습 흐름</span></p>
             </div>
             <Link href="/curriculum" className="text-sm text-gray-500 flex items-center hover:text-gray-800 whitespace-nowrap">
               전체 서비스 <ChevronRight className="h-4 w-4" />
@@ -319,36 +349,34 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {steps.map((s) => {
-              const st = STEP_STYLE[s.color];
-              const hasContent = s.examCount !== null;
+            {RECOMMENDED_CONTENT.map((content) => {
+              const st = CONTENT_STYLE[content.color];
               return (
                 <Link
-                  key={s.id}
-                   href={`/step/${s.id}`}
+                  key={content.label}
+                  href="/curriculum"
                   className={`bg-white rounded-2xl border border-gray-200 p-6 shadow-sm relative overflow-hidden group flex flex-col ${st.hover} transition-colors`}
                 >
                   <div className={`absolute top-0 right-0 w-24 h-24 ${st.decor} rounded-bl-full opacity-50 group-hover:scale-110 transition-transform pointer-events-none`}></div>
 
                   <div className="relative flex items-center justify-between mb-4">
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${st.iconBg}`}>
-                      {STEP_ICON[s.id]}
+                      {content.icon}
                     </div>
                     <span className={`${st.badge} text-[11px] font-black px-2.5 py-1 rounded-full flex items-center gap-1 whitespace-nowrap`}>
-                      <Star className="h-3 w-3 fill-current" />
-                      {s.stepLabel}
+                      {content.label}
                     </span>
                   </div>
 
-                  <h3 className="relative text-xl font-black text-gray-900 mb-5">{s.title}</h3>
+                  <h3 className="relative text-xl font-black text-gray-900 mb-5">{content.title}</h3>
 
                   <div className="mb-5 min-h-[48px]">
-                    <h4 className="font-bold text-gray-900 mb-1 leading-snug">{s.subtitle}</h4>
-                    <p className="text-sm text-gray-600 leading-snug">{s.tagline}</p>
+                    <h4 className="font-bold text-gray-900 mb-1 leading-snug">{content.subtitle}</h4>
+                    <p className="text-sm text-gray-600 leading-snug">{content.tagline}</p>
                   </div>
 
                   <div className="flex flex-wrap gap-1.5 mb-5">
-                    {s.tags.map((t) => (
+                    {content.tags.map((t) => (
                       <span key={t} className="bg-gray-100 text-gray-600 text-[11px] px-2 py-1 rounded">
                         #{t}
                       </span>
@@ -356,9 +384,9 @@ export default function Home() {
                   </div>
 
                   <div className="flex justify-between items-center text-xs mt-auto pt-3 border-t border-gray-100">
-                    <span className={`flex items-center gap-1.5 ${hasContent ? 'text-gray-500' : 'text-gray-400'}`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${hasContent ? st.dot : 'bg-gray-300'}`}></span>
-                      {hasContent ? `문제지 ${s.examCount!.toLocaleString()}+` : '문제지 준비중'}
+                    <span className="flex items-center gap-1.5 text-gray-500">
+                      <span className={`w-1.5 h-1.5 rounded-full ${st.dot}`}></span>
+                      {content.count}
                     </span>
                     <span className={`text-gray-400 flex items-center gap-1 ${st.accent} whitespace-nowrap`}>
                       바로가기 <ChevronRight className="h-3 w-3" />
@@ -392,31 +420,31 @@ export default function Home() {
               <div className="border-b border-gray-100 pb-4 cursor-pointer group">
                 <div className="flex justify-between items-center mb-2">
                   <div className="flex items-center gap-2">
-                    <span className="border border-red-200 text-red-500 text-[10px] px-1.5 py-0.5 rounded">조달법규</span>
+                    <span className="border border-red-200 text-red-500 text-[10px] px-1.5 py-0.5 rounded">제1장</span>
                     <span className="text-xs text-gray-500">질문</span>
                   </div>
                   <span className="text-xs text-gray-400">조회 270 댓글 3</span>
                 </div>
                 <h4 className="font-bold text-gray-900 mb-1 flex items-center gap-1 group-hover:text-blue-600">
                   <span className="text-red-500 border border-red-500 rounded-full w-4 h-4 flex items-center justify-center text-[10px]">N</span>
-                  수의계약 vs 일반경쟁입찰 구분 기준
+                  물품구매계약 입찰 및 낙찰제도 구분 기준
                 </h4>
-                <p className="text-sm text-gray-500 truncate">국가계약법 시행령 제26조에 따른 수의계약 허용 요건이 헷갈려서...</p>
+                <p className="text-sm text-gray-500 truncate">정부계약 개요와 입찰집행 절차가 실제 계약관리로 이어지는 흐름이 헷갈려서...</p>
               </div>
 
               <div className="pt-2 cursor-pointer group">
                 <div className="flex justify-between items-center mb-2">
                   <div className="flex items-center gap-2">
-                    <span className="border border-orange-200 text-orange-500 text-[10px] px-1.5 py-0.5 rounded">원가계산</span>
+                    <span className="border border-orange-200 text-orange-500 text-[10px] px-1.5 py-0.5 rounded">제3장</span>
                     <span className="text-xs text-gray-500">질문</span>
                   </div>
                   <span className="text-xs text-gray-400">조회 287 댓글 6</span>
                 </div>
                 <h4 className="font-bold text-gray-900 mb-1 flex items-center gap-1 group-hover:text-blue-600">
                   <span className="text-red-500 border border-red-500 rounded-full w-4 h-4 flex items-center justify-center text-[10px]">N</span>
-                  간접노무비 계산 방법 문의드립니다
+                  예정가격 기초조사와 원가계산 용역의뢰 차이
                 </h4>
-                <p className="text-sm text-gray-500 truncate">예정가격 작성 시 간접노무비율 산정 기준이 어디에 나오는지...</p>
+                <p className="text-sm text-gray-500 truncate">예정가격 결정기준을 잡을 때 기초조사와 용역의뢰를 어떻게 구분하는지...</p>
               </div>
             </div>
           </div>
@@ -462,12 +490,12 @@ export default function Home() {
                 </span>
               </div>
               
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">풀이 TIP</h3>
-              <p className="text-sm text-gray-700 mb-6">전문가처럼 알려주는 <span className="font-bold">문제 풀이 전략</span></p>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">목차 TIP</h3>
+              <p className="text-sm text-gray-700 mb-6">장별 흐름으로 정리하는 <span className="font-bold">공공조달 학습 전략</span></p>
               
               <div className="mt-auto">
                 <span className="text-gray-400 text-xs flex items-center gap-1">
-                  <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div> 영역별 학습, 실전대비, 직전대비
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div> 물품구매계약, 예정가격, 낙찰자 선정
                 </span>
               </div>
             </div>

@@ -11,8 +11,11 @@ import {
   Ticket,
   FileText,
   Package,
+  CreditCard,
+  ShoppingCart,
 } from 'lucide-react';
 import { useAuth } from '../lib/AuthContext';
+import { getBookCart, getBookOrders } from '../lib/demoStore';
 
 function getNickname(email: string | undefined | null) {
   if (!email) return '수험생';
@@ -27,6 +30,7 @@ function getAvatarUrl(email: string | undefined | null) {
 export default function UserMenu() {
   const { user, signOut } = useAuth();
   const [open, setOpen] = useState(false);
+  const [counts, setCounts] = useState({ cart: 0, orders: 0 });
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -52,20 +56,31 @@ export default function UserMenu() {
   const nickname = getNickname(user.email);
   const avatarUrl = getAvatarUrl(user.email);
 
+  const refreshCounts = () => {
+    const cartCount = getBookCart().reduce((sum, item) => sum + item.quantity, 0);
+    setCounts({ cart: cartCount, orders: getBookOrders().length });
+  };
+
   const gridItems = [
-    { icon: <GraduationCap className="h-6 w-6" />, label: '내 강의실', href: '/mypage' },
-    { icon: <UserIcon className="h-6 w-6" />, label: '프로필', href: '/mypage' },
-    { icon: <Heart className="h-6 w-6" />, label: '찜한 교재', href: '/mypage' },
-    { icon: <Ticket className="h-6 w-6" />, label: '쿠폰', href: '/mypage', badge: 0 },
-    { icon: <FileText className="h-6 w-6" />, label: '이용 가이드', href: '/community' },
-    { icon: <Package className="h-6 w-6" />, label: '내 주문', href: '/mypage', badge: 0 },
+    { icon: <GraduationCap className="h-6 w-6" />, label: '내 강의실', href: '/mypage?tab=classroom' },
+    { icon: <UserIcon className="h-6 w-6" />, label: '프로필', href: '/mypage?tab=profile' },
+    { icon: <Heart className="h-6 w-6" />, label: '찜한 교재', href: '/mypage?tab=favorites' },
+    { icon: <Ticket className="h-6 w-6" />, label: '쿠폰', href: '/mypage?tab=coupons', badge: 0 },
+    { icon: <FileText className="h-6 w-6" />, label: '이용 가이드', href: '/mypage?tab=guide' },
+    { icon: <Package className="h-6 w-6" />, label: '구매내역', href: '/mypage?tab=purchases', badge: counts.orders },
+    { icon: <CreditCard className="h-6 w-6" />, label: '결제내역', href: '/mypage?tab=payments', badge: counts.orders },
+    { icon: <ShoppingCart className="h-6 w-6" />, label: '장바구니', href: '/books/cart', badge: counts.cart },
+    { icon: <Package className="h-6 w-6" />, label: '내 주문', href: '/mypage?tab=orders', badge: counts.orders },
   ];
 
   return (
     <div ref={ref} className="relative">
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => {
+          refreshCounts();
+          setOpen((v) => !v);
+        }}
         aria-label="유저 메뉴"
         aria-expanded={open}
         className="flex items-center gap-1 rounded-full hover:bg-gray-50 p-1 transition-colors"

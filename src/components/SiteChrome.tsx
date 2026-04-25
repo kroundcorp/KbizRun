@@ -11,6 +11,7 @@ import {
   Ticket,
   Gift,
   BookOpen,
+  FileText,
   MessageSquare,
   Layers,
   LogIn,
@@ -80,6 +81,7 @@ function MobileDrawer({
     { type: 'link', label: '전체 서비스', to: '/curriculum', icon: <Layers className="h-4 w-4" /> },
     { type: 'link', label: '이벤트', to: '/events', icon: <Gift className="h-4 w-4" /> },
     { type: 'link', label: '교재', to: '/books', icon: <BookOpen className="h-4 w-4" /> },
+    { type: 'link', label: '인강', to: '/lectures', icon: <FileText className="h-4 w-4" /> },
     { type: 'link', label: '커뮤니티', to: '/community', icon: <MessageSquare className="h-4 w-4" /> },
     { type: 'button', label: '쿠폰인증센터', icon: <Ticket className="h-4 w-4" />, onClick: onCouponClick },
   ];
@@ -302,18 +304,19 @@ function Header() {
         <div className="hidden lg:block border-t border-gray-100">
           <div className="max-w-[1200px] mx-auto px-4 flex items-center gap-4 py-2.5">
             <div className="flex items-center gap-2 shrink-0">
+              <Link href="/" className="bg-[#2563eb] text-white px-5 py-2 rounded-full text-sm font-bold hover:bg-blue-700 transition-colors">
+                홈
+              </Link>
               <Link href="/certification" className="bg-[#2563eb] text-white px-5 py-2 rounded-full text-sm font-bold">
                 자격소개
-              </Link>
-              <Link href="/curriculum" className="text-gray-600 px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-50">
-                교육과정
               </Link>
             </div>
             <div className="w-px h-4 bg-gray-300 mx-2 shrink-0"></div>
 
             <div className="flex items-center gap-5 xl:gap-6 text-sm text-gray-700">
-              <Link href="/" className="hover:text-blue-600 whitespace-nowrap font-bold text-gray-900">홈</Link>
+              <Link href="/curriculum" className="hover:text-blue-600 whitespace-nowrap font-bold text-gray-900">교육과정</Link>
               <Link href="/books" className="hover:text-blue-600">교재</Link>
+              <Link href="/lectures" className="hover:text-blue-600 whitespace-nowrap">인강</Link>
               <Link href="/community" className="hover:text-blue-600">커뮤니티</Link>
               <Link href="/curriculum" className="hover:text-blue-600 whitespace-nowrap">전체 서비스</Link>
             </div>
