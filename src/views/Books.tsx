@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { BookOpen, Check, Package } from 'lucide-react';
+import { BookOpen, Check, Package, ShoppingBag } from 'lucide-react';
 import { books, Book } from '../data/books';
 
 const categories: Array<{ key: 'all' | Book['category']; label: string }> = [
@@ -21,12 +21,23 @@ export default function Books() {
 
   return (
     <main className="max-w-[1200px] mx-auto px-4 py-8 md:py-12">
-      <header className="text-center mb-8 md:mb-10">
-        <p className="text-blue-600 font-bold text-sm mb-2">BOOKS</p>
-        <h1 className="text-3xl md:text-4xl font-black text-gray-900 mb-3">교재 구매</h1>
-        <p className="text-gray-500 text-sm md:text-base">
-          34년 조달 전문가가 직접 집필·검수한 합격 교재를 만나보세요.
-        </p>
+      <header className="mb-8 md:mb-10">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-blue-600 font-bold text-sm mb-2">BOOKS</p>
+            <h1 className="text-3xl md:text-4xl font-black text-gray-900 mb-3">교재 구매</h1>
+            <p className="text-gray-500 text-sm md:text-base">
+              34년 조달 전문가가 직접 집필·검수한 합격 교재를 만나보세요.
+            </p>
+          </div>
+          <Link
+            href="/books/cart"
+            className="inline-flex items-center gap-2 bg-gray-900 text-white font-bold px-4 py-2.5 rounded-xl hover:bg-gray-700"
+          >
+            <ShoppingBag className="h-4 w-4" />
+            장바구니
+          </Link>
+        </div>
       </header>
 
       <div className="flex flex-wrap gap-2 mb-8 justify-center">
@@ -113,9 +124,7 @@ export default function Books() {
             <li>결제 완료 후 영업일 기준 1~2일 이내 발송됩니다.</li>
             <li>세트 상품은 단품 합산 대비 최대 10% 할인가로 제공됩니다.</li>
             <li>교재 수령 후 14일 이내, 미개봉 상태에 한해 반품 가능합니다.</li>
-            <li>
-              결제는 <span className="font-bold">토스페이먼츠</span>로 연결 예정입니다(준비중).
-            </li>
+            <li>주문서에서 배송지를 입력하고 결제 완료 후 마이페이지에서 배송 상태를 확인할 수 있습니다.</li>
           </ul>
         </div>
       </div>

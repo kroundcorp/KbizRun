@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { getPlan } from '../data/pricing';
 import { lookupCoupon } from '../data/coupons';
+import { getDemoProfile, saveDemoProfile } from '../lib/demoStore';
 
 type PayMethod = 'card' | 'kakaopay' | 'naverpay' | 'tosspay' | 'transfer';
 
@@ -173,6 +174,14 @@ export default function Checkout() {
         startedAt: startedAt.toISOString(),
         expiresAt: expiresAt.toISOString(),
       };
+      saveDemoProfile({
+        ...getDemoProfile(),
+        name,
+        email,
+        phone,
+        planName: plan.name,
+        planExpiresAt: expiresAt.toISOString(),
+      });
       sessionStorage.setItem(`order-${orderNo}`, JSON.stringify(order));
       sessionStorage.setItem('latest-order-no', orderNo);
       router.push(`/checkout/${plan.id}/complete?order=${orderNo}`);

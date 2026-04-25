@@ -16,12 +16,13 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { getBookById } from '../data/books';
+import { addBookToCart, replaceBookCart } from '../lib/demoStore';
 
 export default function BookDetail() {
   const { bookId } = useParams<{ bookId: string }>();
   const book = bookId ? getBookById(bookId) : undefined;
   const [qty, setQty] = useState(1);
-  const [showNotice, setShowNotice] = useState(false);
+  const [notice, setNotice] = useState<'cart' | null>(null);
   const router = useRouter();
 
   if (!book) {
@@ -43,8 +44,14 @@ export default function BookDetail() {
     ? (book.originalPrice - book.price) * qty
     : 0;
 
+  const handleAddToCart = () => {
+    addBookToCart(book.id, qty);
+    setNotice('cart');
+  };
+
   const handlePurchase = () => {
-    setShowNotice(true);
+    replaceBookCart([{ bookId: book.id, quantity: qty, addedAt: new Date().toISOString() }]);
+    router.push('/books/checkout');
   };
 
   return (
@@ -190,7 +197,7 @@ export default function BookDetail() {
           <div className="grid grid-cols-2 gap-3 mb-6">
             <button
               type="button"
-              onClick={handlePurchase}
+              onClick={handleAddToCart}
               className="bg-white text-[#2563eb] border-2 border-[#2563eb] font-bold py-4 rounded-xl hover:bg-blue-50 transition-colors"
             >
               장바구니
@@ -204,12 +211,18 @@ export default function BookDetail() {
             </button>
           </div>
 
-          {showNotice && (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 text-sm text-yellow-800 mb-6">
-              <p className="font-bold mb-1">결제 시스템 준비중입니다</p>
-              <p className="text-yellow-700">
-                토스페이먼츠 연동 후 정식 오픈 예정입니다. 현재는 고객센터(1600-5933) 또는 contact@kbizrun.com 으로 문의 부탁드립니다.
-              </p>
+          {notice === 'cart' && (
+            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-800 mb-6 flex items-center justify-between gap-3">
+              <div>
+                <p className="font-bold mb-1">장바구니에 담았습니다</p>
+                <p className="text-blue-700">수량과 배송지를 확인한 뒤 주문서를 작성할 수 있습니다.</p>
+              </div>
+              <Link
+                href="/books/cart"
+                className="shrink-0 bg-blue-600 text-white font-bold px-4 py-2 rounded-lg hover:bg-blue-700"
+              >
+                장바구니 보기
+              </Link>
             </div>
           )}
 

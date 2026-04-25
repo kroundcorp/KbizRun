@@ -19,3 +19,6 @@ coverage/
 
 # Locally-generated docx exports (md is authoritative)
 *.docx
+
+# Supabase CLI temp
+supabase/.temp/

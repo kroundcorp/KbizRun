@@ -14,11 +14,15 @@ import {
   MessageSquare,
   Layers,
   LogIn,
+  LogOut,
+  User as UserIcon,
   BadgeCheck,
 } from 'lucide-react';
 import CouponModal from './CouponModal';
+import UserMenu from './UserMenu';
 import { subjects } from '../data/subjects';
 import { COUPON_MODAL_EVENT, openCouponModal } from '../lib/modalEvents';
+import { AuthProvider, useAuth } from '../lib/AuthContext';
 
 function TopBanner() {
   return (
@@ -60,6 +64,7 @@ function MobileDrawer({
   onCouponClick: () => void;
 }) {
   const pathname = usePathname();
+  const { user, signOut } = useAuth();
 
   useEffect(() => {
     if (isOpen) {
@@ -119,14 +124,38 @@ function MobileDrawer({
         <div className="flex-1 overflow-y-auto">
           <div className="p-3">
             <p className="text-[11px] font-bold text-gray-400 tracking-wider px-3 py-2">계정</p>
-            <Link
-              href="/login"
-              onClick={onClose}
-              className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 hover:bg-gray-50 text-sm font-bold text-gray-800"
-            >
-              <LogIn className="h-4 w-4 text-gray-500" />
-              로그인/회원가입
-            </Link>
+            {user ? (
+              <div className="space-y-2">
+                <Link
+                  href="/mypage"
+                  onClick={onClose}
+                  className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 hover:bg-gray-50 text-sm font-bold text-gray-800"
+                >
+                  <UserIcon className="h-4 w-4 text-gray-500" />
+                  <span className="truncate">{user.email}</span>
+                </Link>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    await signOut();
+                    onClose();
+                  }}
+                  className="flex w-full items-center gap-3 p-3 rounded-xl border border-gray-200 hover:bg-gray-50 text-sm font-bold text-gray-600"
+                >
+                  <LogOut className="h-4 w-4 text-gray-500" />
+                  로그아웃
+                </button>
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                onClick={onClose}
+                className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 hover:bg-gray-50 text-sm font-bold text-gray-800"
+              >
+                <LogIn className="h-4 w-4 text-gray-500" />
+                로그인/회원가입
+              </Link>
+            )}
           </div>
 
           <div className="p-3">
@@ -205,6 +234,7 @@ function MobileDrawer({
 
 function Header() {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const { user, loading } = useAuth();
 
   return (
     <>
@@ -235,9 +265,15 @@ function Header() {
               이벤트
             </Link>
             <span className="w-px h-4 bg-gray-300" aria-hidden="true"></span>
-            <Link href="/login" className="hover:text-blue-600 whitespace-nowrap">
-              로그인/회원가입
-            </Link>
+            {loading ? (
+              <span className="h-9 w-9 bg-gray-100 rounded-full animate-pulse" aria-hidden="true" />
+            ) : user ? (
+              <UserMenu />
+            ) : (
+              <Link href="/login" className="hover:text-blue-600 whitespace-nowrap">
+                로그인/회원가입
+              </Link>
+            )}
           </div>
 
           <div className="flex lg:hidden items-center gap-1">
@@ -249,7 +285,7 @@ function Header() {
             </button>
             <Link
               href="/pricing"
-              className="bg-[#2563eb] text-white px-3 py-2 rounded-lg text-xs font-bold whitespace-nowrap"
+              className="bg-[#2563eb] text-white px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap hover:bg-blue-700 transition-colors"
             >
               이용권
             </Link>
@@ -280,7 +316,10 @@ function Header() {
               <Link href="/curriculum" className="hover:text-blue-600 whitespace-nowrap">전체 서비스</Link>
             </div>
 
-            <Link href="/pricing" className="bg-[#2563eb] text-white px-4 xl:px-5 py-2 rounded-md font-medium hover:bg-blue-700 transition-colors whitespace-nowrap ml-auto">
+            <Link
+              href="/pricing"
+              className="ml-auto bg-[#2563eb] text-white px-5 py-2 rounded-full text-sm font-bold hover:bg-blue-700 transition-colors whitespace-nowrap"
+            >
               이용권 구매
             </Link>
           </div>
@@ -342,7 +381,7 @@ function Footer() {
   );
 }
 
-export default function SiteChrome({ children }: { children: React.ReactNode }) {
+function SiteChromeInner({ children }: { children: React.ReactNode }) {
   const pathname = usePathname() ?? '';
   const isExam = pathname.startsWith('/exam/') && !pathname.endsWith('/result');
   const isVideo = pathname.startsWith('/video/');
@@ -372,5 +411,13 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
         onClose={() => setCouponModalOpen(false)}
       />
     </>
+  );
+}
+
+export default function SiteChrome({ children }: { children: React.ReactNode }) {
+  return (
+    <AuthProvider>
+      <SiteChromeInner>{children}</SiteChromeInner>
+    </AuthProvider>
   );
 }

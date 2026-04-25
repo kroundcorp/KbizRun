@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useParams, redirect } from 'next/navigation';
 import { ArrowLeft, CheckCircle2, XCircle, TrendingUp, MessageCircle } from 'lucide-react';
 import { getExam } from '../data/exams';
+import { getLatestAttempt } from '../lib/demoStore';
 
 type ResultItem = { id: number; selected: number | null; correct: number };
 
@@ -18,6 +19,14 @@ export default function ExamResult() {
       const raw = sessionStorage.getItem(`exam-result-${exam.id}`);
       if (raw) return JSON.parse(raw);
     } catch {}
+    const attempt = getLatestAttempt(exam.id);
+    if (attempt) {
+      return attempt.answers.map((item) => ({
+        id: item.questionId,
+        selected: item.selected,
+        correct: item.correct,
+      }));
+    }
     return exam.questions.map((q) => ({ id: q.id, selected: null, correct: q.answer }));
   }, [exam]);
 

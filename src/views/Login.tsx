@@ -17,6 +17,7 @@ import {
   checkExistingEmail,
   providerLabel,
 } from '../lib/validation';
+import { supabase } from '../lib/supabase';
 
 export default function Login() {
   const router = useRouter();
@@ -35,12 +36,12 @@ export default function Login() {
     setNotice('소셜 로그인은 현재 준비중입니다. 이메일로 로그인해 주세요.');
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!canSubmit) return;
     setNotice(null);
     setSubmitting(true);
-    await new Promise((r) => setTimeout(r, 700));
+
     const provider = checkExistingEmail(email);
     if (provider && provider !== 'email') {
       setSubmitting(false);
@@ -49,8 +50,26 @@ export default function Login() {
       );
       return;
     }
+
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    console.log('[Login] signInWithPassword result', { data, error });
     setSubmitting(false);
-    router.push('/');
+
+    if (error) {
+      const map: Record<string, string> = {
+        'Invalid login credentials': '이메일 또는 비밀번호가 올바르지 않습니다.',
+        'Email not confirmed': '이메일 인증이 완료되지 않았습니다. 받은 메일의 확인 링크를 클릭해 주세요.',
+      };
+      setNotice(map[error.message] ?? error.message);
+      return;
+    }
+
+    if (!data.session) {
+      setNotice('로그인은 성공했지만 세션이 생성되지 않았습니다. 이메일 인증 여부를 확인해 주세요.');
+      return;
+    }
+
+    router.replace('/');
   };
 
   return (

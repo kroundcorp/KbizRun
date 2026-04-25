@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter, useParams, redirect } from 'next/navigation';
 import { Clock, ChevronLeft, ChevronRight, Flag, X } from 'lucide-react';
 import { getExam } from '../data/exams';
+import { saveExamAttempt } from '../lib/demoStore';
 
 export default function ExamPlayer() {
   const { examId } = useParams<{ examId: string }>();
@@ -47,6 +48,14 @@ export default function ExamPlayer() {
       selected: answers[question.id] ?? null,
       correct: question.answer,
     }));
+    saveExamAttempt({
+      examId: exam.id,
+      answers: payload.map((item) => ({
+        questionId: item.id,
+        selected: item.selected,
+        correct: item.correct,
+      })),
+    });
     sessionStorage.setItem(`exam-result-${exam.id}`, JSON.stringify(payload));
     router.push(`/exam/${exam.id}/result`);
   };

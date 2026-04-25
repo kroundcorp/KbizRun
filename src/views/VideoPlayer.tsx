@@ -7,6 +7,7 @@ import { X, CheckCircle2, Clock, HelpCircle, User, ChevronRight, PlayCircle } fr
 import { getVideo, getVideosForSubject, formatTimestamp, type VideoCuePoint } from '../data/videos';
 import { getSubject } from '../data/subjects';
 import VideoQuizModal from '../components/VideoQuizModal';
+import { getDemoProfile, getLessonProgressMap, saveLessonProgress } from '../lib/demoStore';
 
 const STORAGE_KEY = (videoId: string) => `video-cues-${videoId}`;
 
@@ -41,8 +42,12 @@ export default function VideoPlayer() {
   const video = videoId ? getVideo(videoId) : undefined;
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const progressSaveRef = useRef(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [savedStart, setSavedStart] = useState<number | null>(null);
+  const [continueNotice, setContinueNotice] = useState(false);
+  const [hasAccess, setHasAccess] = useState(true);
   const [activeCue, setActiveCue] = useState<VideoCuePoint | null>(null);
   const [responses, setResponses] = useState<Record<string, CueResponse>>(() =>
     videoId ? loadResponses(videoId) : {},
@@ -65,6 +70,10 @@ export default function VideoPlayer() {
     if (!video) return;
     const initial = loadResponses(video.id);
     setResponses(initial);
+    const saved = getLessonProgressMap()[video.id];
+    setHasAccess(new Date(getDemoProfile().planExpiresAt).getTime() >= Date.now());
+    setSavedStart(saved?.completed ? null : saved?.watchedSeconds ?? null);
+    setContinueNotice(Boolean(saved && !saved.completed && saved.watchedSeconds > 10));
   }, [video]);
 
   if (!videoId) redirect('/');
@@ -75,6 +84,19 @@ export default function VideoPlayer() {
     if (!el || activeCue) return;
     const t = el.currentTime;
     setCurrentTime(t);
+    const baseDuration = Number.isFinite(el.duration) && el.duration > 0 ? el.duration : video.durationSec;
+    const completed = baseDuration > 0 && t >= baseDuration * 0.9;
+    if (Math.floor(t) - progressSaveRef.current >= 5 || completed) {
+      progressSaveRef.current = Math.floor(t);
+      saveLessonProgress({
+        videoId: video.id,
+        subjectId: video.subjectId,
+        watchedSeconds: Math.floor(t),
+        durationSeconds: Math.floor(baseDuration),
+        completed,
+        lastWatchedAt: new Date().toISOString(),
+      });
+    }
     const hit = cuePoints.find(
       (cue) => !responses[cue.id] && cue.interruptType === 'hard' && t + 0.25 >= cue.timestampSec,
     );
@@ -88,6 +110,10 @@ export default function VideoPlayer() {
     const el = videoRef.current;
     if (!el) return;
     setDuration(el.duration);
+    if (savedStart && savedStart > 3 && savedStart < el.duration - 5) {
+      el.currentTime = savedStart;
+      setCurrentTime(savedStart);
+    }
   };
 
   const handleCueComplete = (result: {
@@ -113,6 +139,7 @@ export default function VideoPlayer() {
     const el = videoRef.current;
     if (!el) return;
     el.currentTime = sec;
+    setContinueNotice(false);
     el.play().catch(() => {});
   };
 
@@ -159,9 +186,47 @@ export default function VideoPlayer() {
               playsInline
               onTimeUpdate={handleTimeUpdate}
               onLoadedMetadata={handleLoadedMetadata}
+              onEnded={() =>
+                saveLessonProgress({
+                  videoId: video.id,
+                  subjectId: video.subjectId,
+                  watchedSeconds: Math.floor(duration || video.durationSec),
+                  durationSeconds: Math.floor(duration || video.durationSec),
+                  completed: true,
+                  lastWatchedAt: new Date().toISOString(),
+                })
+              }
               className="w-full aspect-video bg-black"
             />
+            {!hasAccess && (
+              <div className="absolute inset-0 bg-black/80 flex items-center justify-center text-center p-6">
+                <div>
+                  <p className="font-black text-lg mb-2">수강권이 필요한 강의입니다</p>
+                  <Link href="/pricing" className="inline-flex bg-blue-600 text-white font-bold px-5 py-3 rounded-xl hover:bg-blue-700">
+                    이용권 보기
+                  </Link>
+                </div>
+              </div>
+            )}
           </div>
+
+          {continueNotice && savedStart && (
+            <div className="bg-blue-500/10 border border-blue-400/20 rounded-2xl p-4 flex items-center justify-between gap-4">
+              <p className="text-sm text-blue-100">
+                지난 학습 위치 <strong>{formatTimestamp(savedStart)}</strong>부터 이어봅니다.
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  seekTo(0);
+                  setContinueNotice(false);
+                }}
+                className="text-xs font-bold bg-white/10 hover:bg-white/15 px-3 py-2 rounded-lg"
+              >
+                처음부터
+              </button>
+            </div>
+          )}
 
           <div className="bg-white/5 rounded-2xl border border-white/10 p-4">
             <div className="flex items-center justify-between mb-3">
