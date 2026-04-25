@@ -151,74 +151,74 @@ export default function Home() {
         {/* Bottom Grid Section */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
 
-          {/* Card 1: 무료이용 */}
+          {/* Card 1: 표준교재 */}
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-            <h3 className="font-bold text-lg text-gray-900 mb-5">무료이용</h3>
+            <h3 className="font-bold text-lg text-gray-900 mb-5">표준교재</h3>
             
             <div className="grid grid-cols-2 gap-3 mb-4">
-              <div className="bg-gray-50 rounded-xl p-3 flex items-center gap-2 cursor-pointer hover:bg-gray-100">
-                <div className="bg-gray-200 text-gray-600 text-[10px] font-bold px-1.5 py-0.5 rounded">1회</div>
-                <span className="text-sm font-medium text-gray-800 leading-tight">미리보는<br/>제1회 기출</span>
-              </div>
-              <div className="bg-gray-50 rounded-xl p-3 flex items-center gap-2 cursor-pointer hover:bg-gray-100">
-                <div className="bg-gray-200 text-gray-600 text-[10px] font-bold px-1.5 py-0.5 rounded">모의</div>
-                <span className="text-sm font-medium text-gray-800 leading-tight">무료<br/>모의고사</span>
-              </div>
+              <Link href="/books" className="bg-gray-50 rounded-xl p-3 flex items-center gap-2 cursor-pointer hover:bg-gray-100">
+                <div className="bg-blue-100 text-blue-600 text-[10px] font-bold px-1.5 py-0.5 rounded">기본</div>
+                <span className="text-sm font-medium text-gray-800 leading-tight">공공조달<br/>표준교재</span>
+              </Link>
+              <Link href="/books" className="bg-gray-50 rounded-xl p-3 flex items-center gap-2 cursor-pointer hover:bg-gray-100">
+                <div className="bg-blue-100 text-blue-600 text-[10px] font-bold px-1.5 py-0.5 rounded">요약</div>
+                <span className="text-sm font-medium text-gray-800 leading-tight">핵심요약<br/>교재</span>
+              </Link>
             </div>
             
             <div className="space-y-2">
-              <div className="bg-gray-50 rounded-xl p-3.5 flex items-center gap-3 cursor-pointer hover:bg-gray-100">
+              <Link href="/books" className="bg-gray-50 rounded-xl p-3.5 flex items-center gap-3 cursor-pointer hover:bg-gray-100">
                 <FileText className="h-5 w-5 text-blue-400" />
-                <span className="text-sm font-medium text-gray-800">회차별 기출문제</span>
-              </div>
-              <div className="bg-gray-50 rounded-xl p-3.5 flex items-center gap-3 cursor-pointer hover:bg-gray-100">
+                <span className="text-sm font-medium text-gray-800">장별 학습 목차</span>
+              </Link>
+              <Link href="/books" className="bg-gray-50 rounded-xl p-3.5 flex items-center gap-3 cursor-pointer hover:bg-gray-100">
                 <CheckCircle2 className="h-5 w-5 text-green-500" />
-                <span className="text-sm font-medium text-gray-800">기출 무료열람실</span>
-              </div>
+                <span className="text-sm font-medium text-gray-800">최신 개정 반영</span>
+              </Link>
             </div>
           </div>
 
-          {/* Card 2: 과목별 */}
+          {/* Card 2: 예상문제 */}
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-            <h3 className="font-bold text-lg text-gray-900 mb-5">과목별</h3>
+            <h3 className="font-bold text-lg text-gray-900 mb-5">예상문제</h3>
             
             <div className="grid grid-cols-2 gap-y-6 gap-x-2">
-              <Link href="/subject/procurement-laws" className="flex items-center gap-2 cursor-pointer group">
+              <Link href="/free-mock" className="flex items-center gap-2 cursor-pointer group">
                 <span className="text-xl group-hover:scale-110 transition-transform">⭐</span>
                 <span className="text-sm font-medium text-gray-800 group-hover:text-blue-600">기출유사문제</span>
               </Link>
-              <div className="flex items-center gap-2 cursor-pointer group">
+              <Link href="/free-mock" className="flex items-center gap-2 cursor-pointer group">
                 <span className="text-xl group-hover:scale-110 transition-transform">🎯</span>
                 <span className="text-sm font-medium text-gray-800 group-hover:text-blue-600">예상문제</span>
-              </div>
-              <div className="flex items-center gap-2 cursor-pointer group col-span-2">
+              </Link>
+              <Link href="/free-mock" className="flex items-center gap-2 cursor-pointer group col-span-2">
                 <span className="text-xl group-hover:scale-110 transition-transform">👑</span>
-                <span className="text-sm font-medium text-gray-800 group-hover:text-blue-600">핵심 유형공략</span>
-              </div>
+                <span className="text-sm font-medium text-gray-800 group-hover:text-blue-600">핵심 유형 공략</span>
+              </Link>
             </div>
           </div>
 
-          {/* Card 3: 영역별 집중공략 */}
+          {/* Card 3: 영상 강의 */}
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-            <h3 className="font-bold text-lg text-gray-900 mb-5">영역별 집중공략</h3>
+            <h3 className="font-bold text-lg text-gray-900 mb-5">영상 강의</h3>
             
             <div className="grid grid-cols-2 gap-y-6 gap-x-2">
-              <Link href="/subject/procurement-laws" className="flex items-center gap-2 cursor-pointer group">
+              <Link href="/curriculum" className="flex items-center gap-2 cursor-pointer group">
                 <span className="text-xl group-hover:scale-110 transition-transform">📋</span>
-                <span className="text-sm font-medium text-gray-800 group-hover:text-blue-600 leading-tight">조달법규<br/>MASTER</span>
+                <span className="text-sm font-medium text-gray-800 group-hover:text-blue-600 leading-tight">정규<br/>이론강의</span>
               </Link>
-              <div className="flex items-center gap-2 cursor-pointer group">
+              <Link href="/curriculum" className="flex items-center gap-2 cursor-pointer group">
                 <span className="text-xl group-hover:scale-110 transition-transform">📙</span>
-                <span className="text-sm font-medium text-gray-800 group-hover:text-blue-600">계약일반 핵심</span>
-              </div>
-              <div className="flex items-center gap-2 cursor-pointer group">
+                <span className="text-sm font-medium text-gray-800 group-hover:text-blue-600">핵심 요약강의</span>
+              </Link>
+              <Link href="/curriculum" className="flex items-center gap-2 cursor-pointer group">
                 <span className="text-xl group-hover:scale-110 transition-transform">📘</span>
-                <span className="text-sm font-medium text-gray-800 group-hover:text-blue-600">원가계산 변형</span>
-              </div>
-              <div className="flex items-center gap-2 cursor-pointer group">
+                <span className="text-sm font-medium text-gray-800 group-hover:text-blue-600">문제풀이 강의</span>
+              </Link>
+              <Link href="/curriculum" className="flex items-center gap-2 cursor-pointer group">
                 <span className="text-xl group-hover:scale-110 transition-transform">📕</span>
-                <span className="text-sm font-medium text-gray-800 group-hover:text-blue-600">입찰실무 공략</span>
-              </div>
+                <span className="text-sm font-medium text-gray-800 group-hover:text-blue-600">파이널 특강</span>
+              </Link>
             </div>
           </div>
 

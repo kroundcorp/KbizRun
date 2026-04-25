@@ -302,7 +302,9 @@ function Header() {
         <div className="hidden lg:block border-t border-gray-100">
           <div className="max-w-[1200px] mx-auto px-4 flex items-center gap-4 py-2.5">
             <div className="flex items-center gap-2 shrink-0">
-              <button className="bg-[#2563eb] text-white px-5 py-2 rounded-full text-sm font-bold">자격증</button>
+              <Link href="/certification" className="bg-[#2563eb] text-white px-5 py-2 rounded-full text-sm font-bold">
+                자격소개
+              </Link>
               <Link href="/curriculum" className="text-gray-600 px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-50">
                 교육과정
               </Link>
@@ -310,7 +312,7 @@ function Header() {
             <div className="w-px h-4 bg-gray-300 mx-2 shrink-0"></div>
 
             <div className="flex items-center gap-5 xl:gap-6 text-sm text-gray-700">
-              <Link href="/certification" className="hover:text-blue-600 whitespace-nowrap font-bold text-gray-900">자격소개</Link>
+              <Link href="/" className="hover:text-blue-600 whitespace-nowrap font-bold text-gray-900">홈</Link>
               <Link href="/books" className="hover:text-blue-600">교재</Link>
               <Link href="/community" className="hover:text-blue-600">커뮤니티</Link>
               <Link href="/curriculum" className="hover:text-blue-600 whitespace-nowrap">전체 서비스</Link>
