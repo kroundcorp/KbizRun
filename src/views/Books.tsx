@@ -27,7 +27,7 @@ export default function Books() {
             <p className="text-blue-600 font-bold text-sm mb-2">BOOKS</p>
             <h1 className="text-3xl md:text-4xl font-black text-gray-900 mb-3">교재 구매</h1>
             <p className="text-gray-500 text-sm md:text-base">
-              34년 조달 전문가가 직접 집필·검수한 합격 교재를 만나보세요.
+              40년 조달 전문가가 직접 집필·검수한 합격 교재를 만나보세요.
             </p>
           </div>
           <Link

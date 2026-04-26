@@ -67,6 +67,13 @@ const RESOURCE_ICON: Record<StepResource['type'], React.ReactNode> = {
   note: <NotebookPen className="h-5 w-5" />,
 };
 
+const RESOURCE_HREF: Record<StepResource['type'], string> = {
+  pdf: '/books',
+  video: '/lectures',
+  exam: '/free-mock',
+  note: '/mypage?tab=wrong',
+};
+
 export default function StepDetail() {
   const { stepId } = useParams<{ stepId: string }>();
   const router = useRouter();
@@ -84,7 +91,7 @@ export default function StepDetail() {
       <div className="flex items-center gap-2 text-xs text-gray-500 mb-6">
         <Link  href="/" className="hover:text-blue-600">Home</Link>
         <ChevronRight className="h-3 w-3" />
-        <Link  href="/curriculum" className="hover:text-blue-600">4단계 시험대비 전략</Link>
+        <Link  href="/curriculum" className="hover:text-blue-600">교육과정</Link>
         <ChevronRight className="h-3 w-3" />
         <span className="text-gray-900 font-medium">{step.title}</span>
       </div>
@@ -206,35 +213,25 @@ export default function StepDetail() {
             <h2 className="text-xl font-black text-gray-900 mb-5">제공 자료</h2>
             <div className="space-y-2">
               {step.resources.map((r, i) => (
-                <div
+                <Link
                   key={i}
-                  className={`flex items-center gap-4 rounded-2xl p-4 border transition-colors ${
-                    r.disabled
-                      ? 'border-gray-100 bg-gray-50 text-gray-400'
-                      : `border-gray-200 bg-white hover:${color.soft} cursor-pointer`
-                  }`}
+                  href={RESOURCE_HREF[r.type]}
+                  className={`flex items-center gap-4 rounded-2xl p-4 border transition-colors border-gray-200 bg-white ${color.hover} cursor-pointer`}
                 >
                   <div
-                    className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
-                      r.disabled ? 'bg-gray-100 text-gray-300' : `${color.soft} ${color.text}`
-                    }`}
+                    className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${color.soft} ${color.text}`}
                   >
                     {RESOURCE_ICON[r.type]}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className={`font-bold truncate ${r.disabled ? '' : 'text-gray-900'}`}>{r.title}</p>
+                    <p className="font-bold truncate text-gray-900">{r.title}</p>
                     <p className="text-[11px] text-gray-500 mt-0.5 uppercase tracking-wider">
                       {r.type}
                       {r.size && ` · ${r.size}`}
                     </p>
                   </div>
-                  {!r.disabled && (
-                    <Download className="h-4 w-4 text-gray-400 shrink-0" />
-                  )}
-                  {r.disabled && (
-                    <span className="text-[10px] text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full shrink-0">준비중</span>
-                  )}
-                </div>
+                  <Download className="h-4 w-4 text-gray-400 shrink-0" />
+                </Link>
               ))}
             </div>
           </div>

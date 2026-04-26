@@ -4,7 +4,6 @@ export interface StepResource {
   title: string;
   type: 'pdf' | 'video' | 'exam' | 'note';
   size?: string;
-  disabled?: boolean;
 }
 
 export interface Step {
@@ -169,9 +168,9 @@ export const steps: Step[] = [
     ],
     suggestedSubjectIds: ['procurement-laws', 'contract-general', 'bidding-practice'],
     resources: [
-      { title: '파이널 모의고사 (준비중)', type: 'exam', disabled: true },
-      { title: '시험 직전 체크리스트 (준비중)', type: 'pdf', disabled: true },
-      { title: '약점 영역 3분 요약 영상 (준비중)', type: 'video', disabled: true },
+      { title: '파이널 모의고사', type: 'exam' },
+      { title: '시험 직전 체크리스트', type: 'pdf' },
+      { title: '약점 영역 3분 요약 영상', type: 'video' },
     ],
     prevStepId: 'practice',
   },

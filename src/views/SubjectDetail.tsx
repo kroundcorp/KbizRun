@@ -72,9 +72,9 @@ export default function SubjectDetail() {
                   이어서 학습
                 </Link>
               ) : (
-                <button disabled className="bg-gray-200 text-gray-500 px-4 md:px-6 py-2.5 md:py-3 rounded-xl font-bold cursor-not-allowed text-sm md:text-base whitespace-nowrap">
-                  준비중
-                </button>
+                <Link href="/free-mock" className="bg-blue-600 text-white px-4 md:px-6 py-2.5 md:py-3 rounded-xl font-bold text-sm md:text-base hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200 whitespace-nowrap">
+                  예상문제 풀기
+                </Link>
               )}
             </div>
           </div>
@@ -101,8 +101,11 @@ export default function SubjectDetail() {
             {tab === '기출문제' && (
               <div className="space-y-4">
                 {exams.length === 0 && (
-                  <div className="bg-white rounded-2xl border border-gray-200 p-10 text-center text-gray-400">
-                    아직 등록된 기출문제가 없습니다. 곧 업로드될 예정입니다.
+                  <div className="bg-white rounded-2xl border border-gray-200 p-10 text-center">
+                    <p className="text-gray-500 mb-4">현재 목차 기준 예상문제로 바로 학습할 수 있습니다.</p>
+                    <Link href="/free-mock" className="inline-flex items-center justify-center bg-blue-600 text-white font-bold px-5 py-2.5 rounded-xl hover:bg-blue-700">
+                      예상문제 풀기
+                    </Link>
                   </div>
                 )}
                 {exams.map((exam, idx) => {
@@ -185,8 +188,11 @@ export default function SubjectDetail() {
             {tab === '강의' && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {lectureVideos.length === 0 && (
-                  <div className="col-span-full bg-white rounded-2xl border border-gray-200 p-10 text-center text-gray-400">
-                    아직 등록된 강의 영상이 없습니다. 곧 업로드될 예정입니다.
+                  <div className="col-span-full bg-white rounded-2xl border border-gray-200 p-10 text-center">
+                    <p className="text-gray-500 mb-4">전체 영상 강의 목록에서 필기·실기 커리큘럼을 확인하세요.</p>
+                    <Link href="/lectures" className="inline-flex items-center justify-center bg-blue-600 text-white font-bold px-5 py-2.5 rounded-xl hover:bg-blue-700">
+                      영상 강의 전체보기
+                    </Link>
                   </div>
                 )}
                 {lectureVideos.map((v) => (
@@ -221,7 +227,10 @@ export default function SubjectDetail() {
             {tab === '오답노트' && (
               <div className="bg-white rounded-2xl border border-gray-200 p-10 text-center">
                 <p className="text-gray-500 mb-4">아직 오답 기록이 없습니다.</p>
-                <p className="text-sm text-gray-400">문제를 풀어 틀린 문제가 자동으로 쌓입니다.</p>
+                <p className="text-sm text-gray-400 mb-5">문제를 풀어 틀린 문제가 자동으로 쌓입니다.</p>
+                <Link href="/free-mock" className="inline-flex items-center justify-center bg-blue-600 text-white font-bold px-5 py-2.5 rounded-xl hover:bg-blue-700">
+                  예상문제 시작하기
+                </Link>
               </div>
             )}
           </div>
@@ -240,14 +249,14 @@ export default function SubjectDetail() {
                   </div>
                 </div>
                 <p className="text-sm text-purple-100 mb-6 leading-relaxed">
-                  궁금한 점을 자유롭게 물어보세요. 34년 경력 조달 전문가의 노하우가 담긴 AI가 답합니다.
+                  궁금한 점을 자유롭게 물어보세요. 40년 경력 조달 전문가의 노하우와 AI 기술을 결합해 답변합니다.
                 </p>
                 <div className="bg-white/10 rounded-xl p-3 mb-4 border border-white/10">
                   <p className="text-xs text-purple-200 italic">"최근 개정된 조문 중 시험 빈출 주제는?"</p>
                 </div>
-                <button className="w-full bg-white text-[#37257a] font-bold py-3 rounded-xl hover:bg-purple-50 transition-colors">
-                  AI에게 질문하기
-                </button>
+                <Link href="/community" className="block w-full bg-white text-[#37257a] font-bold py-3 rounded-xl hover:bg-purple-50 transition-colors text-center">
+                  게시판에 질문하기
+                </Link>
               </div>
             </div>
 

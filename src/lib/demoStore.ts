@@ -1,6 +1,8 @@
 'use client';
 
 import { getBookById } from '../data/books';
+import { posts, type Post } from '../data/community';
+import { mockCoupons, type Coupon } from '../data/coupons';
 import { exams, getExam } from '../data/exams';
 import { subjects } from '../data/subjects';
 import { videos } from '../data/videos';
@@ -11,6 +13,11 @@ const KEYS = {
   bookOrders: 'kbiz-book-orders',
   lessonProgress: 'kbiz-lesson-progress',
   examAttempts: 'kbiz-exam-attempts',
+  favoriteBooks: 'kbiz-favorite-books',
+  coupons: 'kbiz-user-coupons',
+  communityPosts: 'kbiz-community-posts',
+  mentoringBookings: 'kbiz-mentoring-bookings',
+  notifications: 'kbiz-notifications',
 };
 
 export type BookOrderStatus = 'paid' | 'preparing' | 'shipped' | 'delivered';
@@ -21,6 +28,32 @@ export interface DemoProfile {
   phone: string;
   planName: string;
   planExpiresAt: string;
+}
+
+export interface UserCoupon {
+  code: string;
+  title: string;
+  benefit: string;
+  expiresAt: string;
+  used: boolean;
+  registeredAt: string;
+}
+
+export interface MentoringBooking {
+  id: string;
+  mentorName: string;
+  topic: string;
+  preferredTime: string;
+  message: string;
+  status: 'requested' | 'confirmed' | 'completed';
+  createdAt: string;
+}
+
+export interface DemoNotification {
+  id: string;
+  title: string;
+  createdAt: string;
+  read: boolean;
 }
 
 export interface BookCartItem {
@@ -112,6 +145,23 @@ export function saveDemoProfile(profile: DemoProfile) {
   writeJson(KEYS.profile, profile);
 }
 
+export function getFavoriteBooks(): string[] {
+  return readJson<string[]>(KEYS.favoriteBooks, []);
+}
+
+export function isFavoriteBook(bookId: string): boolean {
+  return getFavoriteBooks().includes(bookId);
+}
+
+export function toggleFavoriteBook(bookId: string): string[] {
+  const favorites = getFavoriteBooks();
+  const next = favorites.includes(bookId)
+    ? favorites.filter((id) => id !== bookId)
+    : [bookId, ...favorites];
+  writeJson(KEYS.favoriteBooks, next.filter((id) => getBookById(id)));
+  return next;
+}
+
 export function getBookCart(): BookCartItem[] {
   return readJson<BookCartItem[]>(KEYS.cart, []);
 }
@@ -185,6 +235,132 @@ export function createBookOrder(input: {
   writeJson(KEYS.bookOrders, [order, ...getBookOrders()]);
   clearBookCart();
   return order;
+}
+
+export function getPaymentRecords() {
+  return getBookOrders().map((order) => ({
+    id: order.orderNo,
+    label: order.items[0]?.title
+      ? `${order.items[0].title}${order.items.length > 1 ? ` 외 ${order.items.length - 1}건` : ''}`
+      : '교재 주문',
+    amount: order.totalAmount,
+    method: order.payMethod,
+    paidAt: order.createdAt,
+  }));
+}
+
+export function getUserCoupons(): UserCoupon[] {
+  return readJson<UserCoupon[]>(KEYS.coupons, []);
+}
+
+export function registerUserCoupon(code: string): { ok: boolean; message: string; coupons: UserCoupon[] } {
+  const normalized = code.trim().toUpperCase();
+  const source: Coupon | undefined = mockCoupons[normalized];
+  const current = getUserCoupons();
+  if (!source) return { ok: false, message: '존재하지 않는 쿠폰 번호입니다.', coupons: current };
+  if (source.used) return { ok: false, message: '이미 사용된 쿠폰입니다.', coupons: current };
+  if (new Date(source.expiresAt).getTime() < Date.now()) return { ok: false, message: '유효기간이 지난 쿠폰입니다.', coupons: current };
+  if (current.some((coupon) => coupon.code === normalized)) return { ok: false, message: '이미 등록된 쿠폰입니다.', coupons: current };
+  const next: UserCoupon[] = [
+    {
+      code: source.code,
+      title: source.title,
+      benefit: source.benefit,
+      expiresAt: source.expiresAt,
+      used: false,
+      registeredAt: new Date().toISOString(),
+    },
+    ...current,
+  ];
+  writeJson(KEYS.coupons, next);
+  return { ok: true, message: '쿠폰이 등록되었습니다.', coupons: next };
+}
+
+export type CommunityPost = Post;
+
+export function getCommunityPosts(): CommunityPost[] {
+  return readJson<CommunityPost[]>(KEYS.communityPosts, posts);
+}
+
+export function getCommunityPost(id: number): CommunityPost | undefined {
+  return getCommunityPosts().find((post) => post.id === id);
+}
+
+export function createCommunityPost(input: {
+  subject: string;
+  type: CommunityPost['type'];
+  title: string;
+  author: string;
+  body: string;
+}): CommunityPost {
+  const current = getCommunityPosts();
+  const nextId = Math.max(0, ...current.map((post) => post.id)) + 1;
+  const today = new Date().toISOString().slice(0, 10);
+  const post: CommunityPost = {
+    id: nextId,
+    subject: input.subject,
+    type: input.type,
+    title: input.title,
+    author: input.author,
+    createdAt: today,
+    views: 0,
+    comments: 0,
+    body: input.body,
+    replies: [],
+  };
+  writeJson(KEYS.communityPosts, [post, ...current]);
+  return post;
+}
+
+export function addCommunityReply(postId: number, input: { author: string; body: string }): CommunityPost | null {
+  const current = getCommunityPosts();
+  const idx = current.findIndex((post) => post.id === postId);
+  if (idx < 0) return null;
+  const today = new Date().toISOString().slice(0, 10);
+  const target = current[idx];
+  const replies = [...(target.replies ?? []), { author: input.author, body: input.body, createdAt: today }];
+  const updated: CommunityPost = { ...target, replies, comments: replies.length };
+  const next = [...current];
+  next[idx] = updated;
+  writeJson(KEYS.communityPosts, next);
+  return updated;
+}
+
+export function getMentoringBookings(): MentoringBooking[] {
+  return readJson<MentoringBooking[]>(KEYS.mentoringBookings, []);
+}
+
+export function createMentoringBooking(input: {
+  mentorName: string;
+  topic: string;
+  preferredTime: string;
+  message: string;
+}): MentoringBooking {
+  const booking: MentoringBooking = {
+    id: `MB${Date.now()}`,
+    mentorName: input.mentorName,
+    topic: input.topic,
+    preferredTime: input.preferredTime,
+    message: input.message,
+    status: 'requested',
+    createdAt: new Date().toISOString(),
+  };
+  writeJson(KEYS.mentoringBookings, [booking, ...getMentoringBookings()]);
+  return booking;
+}
+
+export function getNotifications(): DemoNotification[] {
+  return readJson<DemoNotification[]>(KEYS.notifications, [
+    { id: 'notice-1', title: '신규 강의 업로드 — 필기 기본이론', createdAt: new Date().toISOString(), read: false },
+    { id: 'notice-2', title: '내 게시글에 새 댓글이 달렸어요', createdAt: new Date().toISOString(), read: false },
+    { id: 'notice-3', title: '이용권이 7일 뒤 만료됩니다', createdAt: new Date().toISOString(), read: true },
+  ]);
+}
+
+export function markNotificationRead(id: string): DemoNotification[] {
+  const next = getNotifications().map((item) => (item.id === id ? { ...item, read: true } : item));
+  writeJson(KEYS.notifications, next);
+  return next;
 }
 
 export function getLessonProgress(): LessonProgress[] {

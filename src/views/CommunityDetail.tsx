@@ -1,19 +1,35 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useParams, redirect } from 'next/navigation';
 import { ArrowLeft, ThumbsUp, MessageCircle, Share2 } from 'lucide-react';
-import { getPost, posts } from '../data/community';
+import { addCommunityReply, getCommunityPost, getCommunityPosts, getDemoProfile, type CommunityPost } from '../lib/demoStore';
 
 export default function CommunityDetail() {
   const { postId } = useParams<{ postId: string }>();
-  const post = postId ? getPost(Number(postId)) : undefined;
+  const [posts, setPosts] = useState(() => getCommunityPosts());
+  const [post, setPost] = useState<CommunityPost | undefined>(() => (postId ? getCommunityPost(Number(postId)) : undefined));
   const [reply, setReply] = useState('');
 
   if (!post) redirect('/community');
 
-  const related = posts.filter((p) => p.id !== post.id && p.subject === post.subject).slice(0, 3);
+  const related = useMemo(
+    () => posts.filter((p) => p.id !== post.id && p.subject === post.subject).slice(0, 3),
+    [post.id, post.subject, posts],
+  );
+
+  const submitReply = () => {
+    if (!reply.trim()) return;
+    const updated = addCommunityReply(post.id, {
+      author: getDemoProfile().name,
+      body: reply.trim(),
+    });
+    if (!updated) return;
+    setPost(updated);
+    setPosts(getCommunityPosts());
+    setReply('');
+  };
 
   return (
     <main className="max-w-[900px] mx-auto px-4 py-10">
@@ -92,7 +108,11 @@ export default function CommunityDetail() {
             placeholder="댓글을 입력하세요"
             className="flex-1 border border-gray-200 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 resize-none min-h-[80px]"
           />
-          <button className="bg-blue-600 text-white font-bold px-5 rounded-xl hover:bg-blue-700 self-stretch">
+          <button
+            type="button"
+            onClick={submitReply}
+            className="bg-blue-600 text-white font-bold px-5 rounded-xl hover:bg-blue-700 self-stretch"
+          >
             등록
           </button>
         </div>

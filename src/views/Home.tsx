@@ -73,9 +73,9 @@ export default function Home() {
           <div className="col-span-12 lg:col-span-3 lg:order-1 bg-white rounded-2xl border border-gray-200 p-5 shadow-sm flex flex-col">
             <div className="flex justify-between items-center mb-6">
               <h3 className="font-bold text-gray-900">업로드 일정</h3>
-              <a href="#" className="text-[11px] text-gray-400 flex items-center hover:text-gray-600">
+              <Link href="/lectures" className="text-[11px] text-gray-400 flex items-center hover:text-gray-600">
                 바로가기 <ChevronRight className="h-3 w-3" />
-              </a>
+              </Link>
             </div>
             
             <ul className="space-y-4 flex-1">

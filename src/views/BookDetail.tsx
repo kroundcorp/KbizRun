@@ -14,15 +14,17 @@ import {
   Truck,
   RefreshCw,
   ShieldCheck,
+  Heart,
 } from 'lucide-react';
 import { getBookById } from '../data/books';
-import { addBookToCart, replaceBookCart } from '../lib/demoStore';
+import { addBookToCart, isFavoriteBook, replaceBookCart, toggleFavoriteBook } from '../lib/demoStore';
 
 export default function BookDetail() {
   const { bookId } = useParams<{ bookId: string }>();
   const book = bookId ? getBookById(bookId) : undefined;
   const [qty, setQty] = useState(1);
   const [notice, setNotice] = useState<'cart' | null>(null);
+  const [favorite, setFavorite] = useState(() => (bookId ? isFavoriteBook(bookId) : false));
   const router = useRouter();
 
   if (!book) {
@@ -100,9 +102,21 @@ export default function BookDetail() {
             <span className="inline-block bg-blue-50 text-blue-700 text-xs font-bold px-2.5 py-1 rounded mb-3">
               {book.category}
             </span>
-            <h1 className="text-2xl md:text-3xl font-black text-gray-900 leading-tight">
-              {book.title}
-            </h1>
+            <div className="flex items-start justify-between gap-3">
+              <h1 className="text-2xl md:text-3xl font-black text-gray-900 leading-tight">
+                {book.title}
+              </h1>
+              <button
+                type="button"
+                onClick={() => setFavorite(toggleFavoriteBook(book.id).includes(book.id))}
+                className={`shrink-0 h-11 w-11 rounded-full border flex items-center justify-center ${
+                  favorite ? 'bg-red-50 border-red-100 text-red-500' : 'bg-white border-gray-200 text-gray-400 hover:text-red-500'
+                }`}
+                aria-label="찜하기"
+              >
+                <Heart className={`h-5 w-5 ${favorite ? 'fill-current' : ''}`} />
+              </button>
+            </div>
             {book.subtitle && (
               <p className="text-gray-500 mt-2">{book.subtitle}</p>
             )}

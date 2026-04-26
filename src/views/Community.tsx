@@ -2,16 +2,26 @@
 
 import React, { useMemo, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { MessageCircle, Search, Plus } from 'lucide-react';
-import { posts } from '../data/community';
+import { createCommunityPost, getCommunityPosts } from '../lib/demoStore';
 
 const TYPES = ['전체', '질문', '팁', '후기', '멘토링', '추천'] as const;
 const BOARD_CATEGORIES = ['전체', '제1장', '제3장', '제4장', '멘토링', '추천', '합격후기'] as const;
 
 export default function Community() {
+  const router = useRouter();
   const [type, setType] = useState<(typeof TYPES)[number]>('전체');
   const [subject, setSubject] = useState<string>('전체');
   const [query, setQuery] = useState('');
+  const [posts, setPosts] = useState(() => getCommunityPosts());
+  const [showWrite, setShowWrite] = useState(false);
+  const [form, setForm] = useState({
+    subject: '제1장',
+    type: '질문' as (typeof TYPES)[number],
+    title: '',
+    body: '',
+  });
 
   const filtered = useMemo(() => {
     return posts.filter((p) => {
@@ -20,7 +30,22 @@ export default function Community() {
       if (query && !p.title.toLowerCase().includes(query.toLowerCase())) return false;
       return true;
     });
-  }, [type, subject, query]);
+  }, [posts, type, subject, query]);
+
+  const submitPost = () => {
+    if (!form.title.trim() || !form.body.trim() || form.type === '전체') return;
+    const post = createCommunityPost({
+      subject: form.subject,
+      type: form.type,
+      title: form.title.trim(),
+      body: form.body.trim(),
+      author: '김조달',
+    });
+    setPosts(getCommunityPosts());
+    setShowWrite(false);
+    setForm({ subject: '제1장', type: '질문', title: '', body: '' });
+    router.push(`/community/${post.id}`);
+  };
 
   return (
     <main className="max-w-[1200px] mx-auto px-4 py-10">
@@ -32,10 +57,60 @@ export default function Community() {
           </h1>
           <p className="text-gray-500">질문, 멘토링, 추천 콘텐츠가 모이는 조달 학습 게시판</p>
         </div>
-        <button className="bg-blue-600 text-white font-bold px-5 py-3 rounded-xl flex items-center gap-2 hover:bg-blue-700">
+        <button
+          type="button"
+          onClick={() => setShowWrite((value) => !value)}
+          className="bg-blue-600 text-white font-bold px-5 py-3 rounded-xl flex items-center gap-2 hover:bg-blue-700"
+        >
           <Plus className="h-4 w-4" /> 글쓰기
         </button>
       </div>
+
+      {showWrite && (
+        <div className="bg-white rounded-3xl border border-blue-200 p-6 shadow-sm mb-8">
+          <h2 className="font-black text-gray-900 mb-4">게시글 작성</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+            <select
+              value={form.subject}
+              onChange={(event) => setForm((current) => ({ ...current, subject: event.target.value }))}
+              className="border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+            >
+              {BOARD_CATEGORIES.filter((item) => item !== '전체').map((item) => (
+                <option key={item} value={item}>{item}</option>
+              ))}
+            </select>
+            <select
+              value={form.type}
+              onChange={(event) => setForm((current) => ({ ...current, type: event.target.value as typeof form.type }))}
+              className="border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+            >
+              {TYPES.filter((item) => item !== '전체').map((item) => (
+                <option key={item} value={item}>{item}</option>
+              ))}
+            </select>
+          </div>
+          <input
+            value={form.title}
+            onChange={(event) => setForm((current) => ({ ...current, title: event.target.value }))}
+            placeholder="제목을 입력하세요"
+            className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+          />
+          <textarea
+            value={form.body}
+            onChange={(event) => setForm((current) => ({ ...current, body: event.target.value }))}
+            placeholder="내용을 입력하세요"
+            className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm min-h-[120px] resize-none mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+          />
+          <div className="flex justify-end gap-2">
+            <button type="button" onClick={() => setShowWrite(false)} className="px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-bold text-gray-600 hover:bg-gray-50">
+              취소
+            </button>
+            <button type="button" onClick={submitPost} className="px-5 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-bold hover:bg-blue-700">
+              등록
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-12 gap-8">
         <aside className="col-span-12 lg:col-span-3 space-y-4">

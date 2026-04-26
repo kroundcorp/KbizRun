@@ -22,19 +22,30 @@ import {
 import { getBookById } from '../data/books';
 import { subjects } from '../data/subjects';
 import { videos } from '../data/videos';
+import { useAuth } from '../lib/AuthContext';
 import {
   getBookCart,
   getBookOrders,
   getCartTotal,
   getDemoProfile,
   getExamAttempts,
+  getFavoriteBooks,
   getLearningSummary,
+  getNotifications,
+  getPaymentRecords,
   getSubjectProgress,
+  getUserCoupons,
   getWrongNoteCount,
+  markNotificationRead,
+  registerUserCoupon,
+  saveDemoProfile,
+  toggleFavoriteBook,
   type BookCartItem,
   type BookOrder,
   type DemoProfile,
+  type DemoNotification,
   type ExamAttempt,
+  type UserCoupon,
 } from '../lib/demoStore';
 
 const TABS = [
@@ -71,10 +82,17 @@ const TAB_BY_QUERY: Record<string, (typeof TABS)[number]> = {
 
 export default function MyPage() {
   const searchParams = useSearchParams();
+  const { signOut } = useAuth();
   const [tab, setTab] = useState<(typeof TABS)[number]>('내 강의실');
   const [profile, setProfile] = useState<DemoProfile | null>(null);
+  const [profileForm, setProfileForm] = useState<DemoProfile>(getDemoProfile());
   const [orders, setOrders] = useState<BookOrder[]>([]);
   const [cart, setCart] = useState<BookCartItem[]>([]);
+  const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
+  const [coupons, setCoupons] = useState<UserCoupon[]>([]);
+  const [couponInput, setCouponInput] = useState('');
+  const [couponNotice, setCouponNotice] = useState('');
+  const [notifications, setNotifications] = useState<DemoNotification[]>([]);
   const [attempts, setAttempts] = useState<ExamAttempt[]>([]);
   const [wrongCount, setWrongCount] = useState(0);
   const [summary, setSummary] = useState({
@@ -85,9 +103,14 @@ export default function MyPage() {
   });
 
   useEffect(() => {
-    setProfile(getDemoProfile());
+    const loadedProfile = getDemoProfile();
+    setProfile(loadedProfile);
+    setProfileForm(loadedProfile);
     setOrders(getBookOrders());
     setCart(getBookCart());
+    setFavoriteIds(getFavoriteBooks());
+    setCoupons(getUserCoupons());
+    setNotifications(getNotifications());
     setAttempts(getExamAttempts());
     setWrongCount(getWrongNoteCount());
     setSummary(getLearningSummary());
@@ -125,6 +148,20 @@ export default function MyPage() {
   const latestAttempt = attempts[0];
   const currentProfile = profile ?? getDemoProfile();
   const cartTotal = getCartTotal(cart);
+  const favoriteBooks = favoriteIds.map((id) => getBookById(id)).filter((book): book is NonNullable<typeof book> => Boolean(book));
+  const payments = getPaymentRecords();
+
+  const saveProfile = () => {
+    saveDemoProfile(profileForm);
+    setProfile(profileForm);
+  };
+
+  const submitCoupon = () => {
+    const result = registerUserCoupon(couponInput);
+    setCoupons(result.coupons);
+    setCouponNotice(result.message);
+    if (result.ok) setCouponInput('');
+  };
 
   return (
     <main className="max-w-[1200px] mx-auto px-4 py-10">
@@ -151,6 +188,7 @@ export default function MyPage() {
               { t: '구매내역', i: <Package className="h-4 w-4" /> },
               { t: '결제내역', i: <CreditCard className="h-4 w-4" /> },
               { t: '장바구니', i: <ShoppingCart className="h-4 w-4" /> },
+              { t: '내 주문', i: <Truck className="h-4 w-4" /> },
               { t: '이용권', i: <FileText className="h-4 w-4" /> },
               { t: '오답노트', i: <Heart className="h-4 w-4" /> },
               { t: '알림', i: <Bell className="h-4 w-4" /> },
@@ -166,7 +204,11 @@ export default function MyPage() {
                 {m.i} {m.t}
               </button>
             ))}
-            <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:bg-gray-50">
+            <button
+              type="button"
+              onClick={() => signOut()}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:bg-gray-50"
+            >
               <LogOut className="h-4 w-4" /> 로그아웃
             </button>
           </div>
@@ -248,42 +290,97 @@ export default function MyPage() {
           {tab === '프로필' && (
             <div className="bg-white rounded-3xl border border-gray-200 p-8 space-y-5">
               <h2 className="font-black text-gray-900 mb-4">프로필 정보</h2>
-              {[
-                ['이름', currentProfile.name],
-                ['이메일', currentProfile.email],
-                ['휴대폰', currentProfile.phone],
-                ['현재 이용권', currentProfile.planName],
-                ['이용권 만료일', formatDate(currentProfile.planExpiresAt)],
-              ].map(([label, value]) => (
-                <div key={label} className="flex justify-between items-center pb-4 border-b border-gray-100 last:border-b-0">
-                  <span className="font-bold text-gray-700 text-sm">{label}</span>
-                  <span className="text-sm text-gray-500">{value}</span>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[
+                  ['name', '이름'],
+                  ['email', '이메일'],
+                  ['phone', '휴대폰'],
+                ].map(([key, label]) => (
+                  <label key={key} className="block">
+                    <span className="text-xs font-bold text-gray-500">{label}</span>
+                    <input
+                      value={profileForm[key as keyof DemoProfile]}
+                      onChange={(event) => setProfileForm((current) => ({ ...current, [key]: event.target.value }))}
+                      className="mt-2 w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                    />
+                  </label>
+                ))}
+                <div className="rounded-2xl bg-gray-50 p-4">
+                  <p className="text-xs font-bold text-gray-500 mb-1">현재 이용권</p>
+                  <p className="font-bold text-gray-900">{currentProfile.planName}</p>
                 </div>
-              ))}
+                <div className="rounded-2xl bg-gray-50 p-4">
+                  <p className="text-xs font-bold text-gray-500 mb-1">이용권 만료일</p>
+                  <p className="font-bold text-gray-900">{formatDate(currentProfile.planExpiresAt)}</p>
+                </div>
+              </div>
+              <button type="button" onClick={saveProfile} className="bg-blue-600 text-white font-bold px-5 py-3 rounded-xl hover:bg-blue-700">
+                프로필 저장
+              </button>
             </div>
           )}
 
           {tab === '찜한 교재' && (
-            <div className="bg-white rounded-3xl border border-gray-200 p-10 text-center">
-              <Heart className="h-10 w-10 text-gray-300 mx-auto mb-4" />
-              <p className="font-bold text-gray-900 mb-2">아직 찜한 교재가 없습니다.</p>
-              <p className="text-sm text-gray-500 mb-5">관심 있는 표준교재와 문제집을 찜해두고 다시 확인하세요.</p>
-              <Link href="/books" className="inline-flex bg-blue-600 text-white font-bold px-5 py-3 rounded-xl hover:bg-blue-700">
-                교재 둘러보기
-              </Link>
+            <div className="bg-white rounded-3xl border border-gray-200 p-8">
+              <h2 className="font-black text-gray-900 mb-4">찜한 교재</h2>
+              {favoriteBooks.length === 0 ? (
+                <div className="py-8 text-center">
+                  <Heart className="h-10 w-10 text-gray-300 mx-auto mb-4" />
+                  <p className="font-bold text-gray-900 mb-2">아직 찜한 교재가 없습니다.</p>
+                  <p className="text-sm text-gray-500 mb-5">관심 있는 표준교재와 문제집을 찜해두고 다시 확인하세요.</p>
+                  <Link href="/books" className="inline-flex bg-blue-600 text-white font-bold px-5 py-3 rounded-xl hover:bg-blue-700">
+                    교재 둘러보기
+                  </Link>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {favoriteBooks.map((book) => (
+                    <div key={book.id} className="flex items-center justify-between rounded-2xl border border-gray-200 p-4">
+                      <Link href={`/books/${book.id}`} className="font-bold text-gray-900 hover:text-blue-600">{book.title}</Link>
+                      <button type="button" onClick={() => setFavoriteIds(toggleFavoriteBook(book.id))} className="text-xs font-bold text-red-500 hover:underline">
+                        삭제
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
           {tab === '쿠폰' && (
             <div className="bg-white rounded-3xl border border-gray-200 p-8">
               <h2 className="font-black text-gray-900 mb-4">쿠폰</h2>
-              <div className="rounded-2xl bg-gray-50 border border-gray-100 p-5 mb-4">
-                <p className="font-bold text-gray-900">보유 쿠폰 0건</p>
-                <p className="text-sm text-gray-500 mt-1">쿠폰 인증센터에서 발급받은 쿠폰을 등록할 수 있습니다.</p>
+              <div className="flex gap-2 mb-4">
+                <input
+                  value={couponInput}
+                  onChange={(event) => setCouponInput(event.target.value.toUpperCase())}
+                  placeholder="쿠폰 코드 입력"
+                  className="flex-1 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                />
+                <button type="button" onClick={submitCoupon} className="bg-gray-900 text-white font-bold px-5 rounded-xl hover:bg-gray-700">
+                  등록
+                </button>
               </div>
-              <Link href="/events" className="inline-flex bg-gray-900 text-white font-bold px-5 py-3 rounded-xl hover:bg-gray-700">
-                이벤트/쿠폰 확인
-              </Link>
+              {couponNotice && <p className="text-sm text-blue-600 mb-4">{couponNotice}</p>}
+              <div className="space-y-3">
+                {coupons.length === 0 ? (
+                  <div className="rounded-2xl bg-gray-50 border border-gray-100 p-5">
+                    <p className="font-bold text-gray-900">보유 쿠폰 0건</p>
+                    <p className="text-sm text-gray-500 mt-1">예: WELCOME-2026, COOP-2026 쿠폰을 등록할 수 있습니다.</p>
+                  </div>
+                ) : (
+                  coupons.map((coupon) => (
+                    <div key={coupon.code} className="rounded-2xl border border-gray-200 p-4">
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="font-bold text-gray-900">{coupon.title}</p>
+                        <span className="text-xs font-black text-blue-600">{coupon.code}</span>
+                      </div>
+                      <p className="text-sm text-gray-500 mt-1">{coupon.benefit}</p>
+                      <p className="text-xs text-gray-400 mt-2">만료일 {coupon.expiresAt}</p>
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
           )}
 
@@ -354,17 +451,17 @@ export default function MyPage() {
                 <CreditCard className="h-5 w-5 text-blue-500" />
                 결제내역
               </h2>
-              {orders.length === 0 ? (
+              {payments.length === 0 ? (
                 <p className="text-sm text-gray-500">아직 결제 내역이 없습니다.</p>
               ) : (
                 <div className="divide-y divide-gray-100">
-                  {orders.map((order) => (
-                    <div key={order.orderNo} className="py-4 flex items-center justify-between">
+                  {payments.map((payment) => (
+                    <div key={payment.id} className="py-4 flex items-center justify-between">
                       <div>
-                        <p className="font-bold text-gray-900">{order.orderNo}</p>
-                        <p className="text-xs text-gray-500">{formatDate(order.createdAt)} · {order.payMethod}</p>
+                        <p className="font-bold text-gray-900">{payment.label}</p>
+                        <p className="text-xs text-gray-500">{formatDate(payment.paidAt)} · {payment.method} · {payment.id}</p>
                       </div>
-                      <span className="font-black text-gray-900">₩{order.totalAmount.toLocaleString()}</span>
+                      <span className="font-black text-gray-900">₩{payment.amount.toLocaleString()}</span>
                     </div>
                   ))}
                 </div>
@@ -506,14 +603,20 @@ export default function MyPage() {
 
           {tab === '알림' && (
             <div className="bg-white rounded-3xl border border-gray-200 divide-y divide-gray-100">
-              {[
-                '신규 기출 업로드 — 제5회 공공조달관리사',
-                '내가 작성한 댓글에 답변이 달렸어요',
-                '이용권이 7일 뒤 만료됩니다',
-              ].map((t, i) => (
-                <div key={i} className="p-5 flex items-center justify-between">
-                  <p className="text-sm text-gray-800">{t}</p>
-                  <span className="text-xs text-gray-400">방금 전</span>
+              {notifications.map((item) => (
+                <div key={item.id} className="p-5 flex items-center justify-between gap-4">
+                  <div>
+                    <p className={`text-sm ${item.read ? 'text-gray-500' : 'text-gray-900 font-bold'}`}>{item.title}</p>
+                    <p className="text-xs text-gray-400 mt-1">{formatDate(item.createdAt)}</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setNotifications(markNotificationRead(item.id))}
+                    className="text-xs font-bold text-blue-600 hover:underline disabled:text-gray-300"
+                    disabled={item.read}
+                  >
+                    {item.read ? '읽음' : '읽음 처리'}
+                  </button>
                 </div>
               ))}
             </div>
@@ -521,18 +624,18 @@ export default function MyPage() {
 
           {tab === '설정' && (
             <div className="bg-white rounded-3xl border border-gray-200 p-8 space-y-6">
-              {[
-                ['이름', currentProfile.name],
-                ['이메일', currentProfile.email],
-                ['휴대폰', currentProfile.phone],
-                ['비밀번호', '변경하기'],
-                ['마케팅 수신 동의', '동의'],
-              ].map(([k, v], i) => (
-                <div key={i} className="flex justify-between items-center pb-4 border-b border-gray-100 last:border-b-0">
-                  <span className="font-bold text-gray-700 text-sm">{k}</span>
-                  <span className="text-sm text-gray-500">{v}</span>
-                </div>
-              ))}
+              <h2 className="font-black text-gray-900">설정</h2>
+              <div className="flex justify-between items-center pb-4 border-b border-gray-100">
+                <span className="font-bold text-gray-700 text-sm">비밀번호</span>
+                <Link href="/login" className="text-sm font-bold text-blue-600 hover:underline">재로그인 후 변경</Link>
+              </div>
+              <label className="flex justify-between items-center pb-4 border-b border-gray-100">
+                <span className="font-bold text-gray-700 text-sm">마케팅 수신 동의</span>
+                <input type="checkbox" defaultChecked className="h-5 w-5 accent-blue-600" />
+              </label>
+              <button type="button" onClick={() => signOut()} className="bg-red-50 text-red-600 font-bold px-5 py-3 rounded-xl hover:bg-red-100">
+                로그아웃
+              </button>
             </div>
           )}
         </section>

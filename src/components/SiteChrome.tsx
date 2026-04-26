@@ -363,9 +363,9 @@ function Footer() {
               <img src="/logo.png" alt="BR 케이비즈런" className="h-7 md:h-8 object-contain brightness-0 invert opacity-90" />
             </Link>
             <div className="flex flex-wrap gap-3 md:gap-4 text-xs md:text-sm font-medium">
-              <a href="#" className="hover:text-white transition-colors">회사소개</a>
+              <Link href="/certification" className="hover:text-white transition-colors">회사소개</Link>
               <Link href="/terms" className="hover:text-white transition-colors">이용약관</Link>
-              <a href="#" className="text-white font-bold hover:text-blue-400 transition-colors">개인정보처리방침</a>
+              <Link href="/terms?doc=privacy" className="text-white font-bold hover:text-blue-400 transition-colors">개인정보처리방침</Link>
               <Link href="/community" className="hover:text-white transition-colors">고객센터</Link>
             </div>
           </div>
