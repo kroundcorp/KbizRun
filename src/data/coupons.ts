@@ -42,7 +42,7 @@ export const mockCoupons: Record<string, Coupon> = {
   'COOP-2026': {
     code: 'COOP-2026',
     title: '협동조합 전용 쿠폰',
-    benefit: '필기+실기 올인원 790,000원 할인 (1,290,000 → 500,000원)',
+    benefit: '필기+실기 올인원 800,000원 할인 (1,290,000 → 490,000원)',
     expiresAt: '2026-12-31',
     used: false,
     kind: 'coop',
@@ -50,7 +50,7 @@ export const mockCoupons: Record<string, Coupon> = {
   'COOP-MEMBER-2026': {
     code: 'COOP-MEMBER-2026',
     title: '협동조합 조합원 쿠폰',
-    benefit: '필기+실기 올인원 790,000원 할인 (1,290,000 → 500,000원)',
+    benefit: '필기+실기 올인원 800,000원 할인 (1,290,000 → 490,000원)',
     expiresAt: '2026-12-31',
     used: false,
     kind: 'coop',

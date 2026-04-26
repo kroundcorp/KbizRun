@@ -119,7 +119,7 @@ export default function Pricing() {
           <p className="font-bold mb-0.5">협동조합 전용 쿠폰 안내</p>
           <p className="text-blue-800">
             협동조합 소속 조합원은 소속 조합으로부터 전용 쿠폰 번호를 발급받아 결제 시 입력하면
-            특별가(500,000원)로 이용권을 구매할 수 있습니다. 쿠폰 관련 문의는{' '}
+            특별가(490,000원)로 이용권을 구매할 수 있습니다. 쿠폰 관련 문의는{' '}
             <span className="font-bold">1600-5933</span> 또는{' '}
             <span className="font-bold">contact@kbizrun.com</span>으로 연락 주세요.
           </p>
