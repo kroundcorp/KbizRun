@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   Search,
   X,
@@ -53,6 +53,44 @@ interface MobileNavItem {
   to?: string;
   icon: React.ReactNode;
   onClick?: () => void;
+}
+
+function SearchForm({
+  onSearch,
+  compact = false,
+}: {
+  onSearch?: () => void;
+  compact?: boolean;
+}) {
+  const router = useRouter();
+  const [query, setQuery] = useState('');
+
+  const submit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const q = query.trim();
+    router.push(q ? `/search?q=${encodeURIComponent(q)}` : '/search');
+    onSearch?.();
+  };
+
+  return (
+    <form onSubmit={submit} className="relative">
+      <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+      <input
+        type="text"
+        value={query}
+        onChange={(event) => setQuery(event.target.value)}
+        placeholder="검색"
+        className={`w-full bg-gray-50 border border-gray-200 rounded-full pl-10 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 ${
+          compact ? 'py-2.5 pr-4' : 'py-2.5 pr-14'
+        }`}
+      />
+      {!compact && (
+        <button type="submit" className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-full bg-blue-600 px-3 py-1.5 text-[11px] font-bold text-white hover:bg-blue-700">
+          검색
+        </button>
+      )}
+    </form>
+  );
 }
 
 function MobileDrawer({
@@ -113,14 +151,7 @@ function MobileDrawer({
         </div>
 
         <div className="p-5 border-b border-gray-100">
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <input
-              type="text"
-              placeholder="검색"
-              className="w-full bg-gray-50 border border-gray-200 rounded-full py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
-            />
-          </div>
+          <SearchForm compact onSearch={onClose} />
         </div>
 
         <div className="flex-1 overflow-y-auto">
@@ -249,13 +280,8 @@ function Header() {
             <img src="/logo.png" alt="BR 케이비즈런" className="h-7 lg:h-8 object-contain" />
           </Link>
 
-          <div className="relative hidden lg:block flex-1 max-w-[420px] mx-8">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <input
-              type="text"
-              placeholder="검색"
-              className="w-full bg-gray-50 border border-gray-200 rounded-full py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
-            />
+          <div className="hidden lg:block flex-1 max-w-[420px] mx-8">
+            <SearchForm />
           </div>
 
           <div className="hidden lg:flex items-center gap-5 text-sm text-gray-700 shrink-0">
@@ -282,12 +308,13 @@ function Header() {
           </div>
 
           <div className="flex lg:hidden items-center gap-1">
-            <button
+            <Link
+              href="/search"
               aria-label="검색"
               className="w-10 h-10 rounded-lg hover:bg-gray-100 flex items-center justify-center"
             >
               <Search className="h-5 w-5 text-gray-600" />
-            </button>
+            </Link>
             <Link
               href="/pricing"
               className="bg-[#2563eb] text-white px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap hover:bg-blue-700 transition-colors"
