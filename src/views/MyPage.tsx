@@ -7,7 +7,6 @@ import {
   Bell,
   ChevronRight,
   CreditCard,
-  FileText,
   GraduationCap,
   Heart,
   HelpCircle,
@@ -58,7 +57,6 @@ const TABS = [
   '결제내역',
   '장바구니',
   '내 주문',
-  '이용권',
   '오답노트',
   '알림',
   '설정',
@@ -74,7 +72,6 @@ const TAB_BY_QUERY: Record<string, (typeof TABS)[number]> = {
   payments: '결제내역',
   cart: '장바구니',
   orders: '내 주문',
-  plan: '이용권',
   wrong: '오답노트',
   notifications: '알림',
   settings: '설정',
@@ -128,12 +125,6 @@ export default function MyPage() {
     [summary.watchedSeconds],
   );
 
-  const daysLeft = useMemo(() => {
-    if (!profile?.planExpiresAt) return 0;
-    const diff = new Date(profile.planExpiresAt).getTime() - Date.now();
-    return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
-  }, [profile?.planExpiresAt]);
-
   const formatStudyTime = (seconds: number) => {
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
@@ -174,7 +165,7 @@ export default function MyPage() {
             <h3 className="font-bold text-gray-900">{currentProfile.name} 님</h3>
             <p className="text-xs text-gray-500 mt-1">{currentProfile.email}</p>
             <div className="mt-4 bg-blue-50 text-blue-700 text-xs font-bold rounded-lg py-2">
-              {currentProfile.planName} · D-{daysLeft}
+              교재 구매 · 정규가/협동조합 전용
             </div>
           </div>
 
@@ -189,7 +180,6 @@ export default function MyPage() {
               { t: '결제내역', i: <CreditCard className="h-4 w-4" /> },
               { t: '장바구니', i: <ShoppingCart className="h-4 w-4" /> },
               { t: '내 주문', i: <Truck className="h-4 w-4" /> },
-              { t: '이용권', i: <FileText className="h-4 w-4" /> },
               { t: '오답노트', i: <Heart className="h-4 w-4" /> },
               { t: '알림', i: <Bell className="h-4 w-4" /> },
               { t: '설정', i: <Settings className="h-4 w-4" /> },
@@ -305,13 +295,9 @@ export default function MyPage() {
                     />
                   </label>
                 ))}
-                <div className="rounded-2xl bg-gray-50 p-4">
-                  <p className="text-xs font-bold text-gray-500 mb-1">현재 이용권</p>
-                  <p className="font-bold text-gray-900">{currentProfile.planName}</p>
-                </div>
-                <div className="rounded-2xl bg-gray-50 p-4">
-                  <p className="text-xs font-bold text-gray-500 mb-1">이용권 만료일</p>
-                  <p className="font-bold text-gray-900">{formatDate(currentProfile.planExpiresAt)}</p>
+                <div className="rounded-2xl bg-gray-50 p-4 md:col-span-2">
+                  <p className="text-xs font-bold text-gray-500 mb-1">구매 가능 상품</p>
+                  <p className="font-bold text-gray-900">교재 구매 · 정규가 · 협동조합 전용</p>
                 </div>
               </div>
               <button type="button" onClick={saveProfile} className="bg-blue-600 text-white font-bold px-5 py-3 rounded-xl hover:bg-blue-700">
@@ -506,67 +492,6 @@ export default function MyPage() {
                   </Link>
                 </div>
               )}
-            </div>
-          )}
-
-          {tab === '이용권' && (
-            <div className="space-y-6">
-              <div className="bg-white rounded-3xl border border-gray-200 p-8">
-                <p className="text-xs text-gray-500 mb-1">현재 이용 중</p>
-                <h2 className="text-2xl font-black text-gray-900 mb-2">{currentProfile.planName}</h2>
-                <p className="text-sm text-gray-500 mb-6">~ {formatDate(currentProfile.planExpiresAt)} · D-{daysLeft}</p>
-                <div className="grid grid-cols-3 gap-4 mb-6">
-                  {['기출', '해설영상', 'AI 챗봇'].map((x) => (
-                    <div key={x} className="bg-gray-50 rounded-xl p-4 text-center text-sm font-bold text-gray-700">
-                      {x} 무제한
-                    </div>
-                  ))}
-                </div>
-                <Link href="/pricing" className="inline-block bg-blue-600 text-white font-bold px-6 py-3 rounded-xl hover:bg-blue-700">
-                  기간 연장하기
-                </Link>
-              </div>
-              <div className="bg-white rounded-3xl border border-gray-200 p-8">
-                <h2 className="font-black text-gray-900 mb-4 flex items-center gap-2">
-                  <Package className="h-5 w-5 text-blue-500" />
-                  교재 주문/배송
-                </h2>
-                {orders.length === 0 ? (
-                  <div className="text-center py-8">
-                    <p className="text-sm text-gray-500 mb-4">아직 교재 주문 내역이 없습니다.</p>
-                    <Link href="/books" className="inline-flex bg-gray-900 text-white font-bold px-5 py-3 rounded-xl hover:bg-gray-700">
-                      교재 구매하기
-                    </Link>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {orders.map((order) => (
-                      <div key={order.orderNo} className="border border-gray-200 rounded-2xl p-5">
-                        <div className="flex items-start justify-between gap-4 mb-3">
-                          <div>
-                            <p className="font-black text-gray-900">{order.orderNo}</p>
-                            <p className="text-xs text-gray-500">{formatDate(order.createdAt)} · {order.items.length}종</p>
-                          </div>
-                          <span className="inline-flex items-center gap-1 bg-blue-50 text-blue-700 text-xs font-bold px-3 py-1 rounded-full">
-                            <Truck className="h-3.5 w-3.5" />
-                            배송 준비중
-                          </span>
-                        </div>
-                        <p className="text-sm text-gray-700 mb-2">
-                          {order.items[0]?.title}
-                          {order.items.length > 1 ? ` 외 ${order.items.length - 1}건` : ''}
-                        </p>
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-500">배송지</span>
-                          <span className="font-medium text-gray-900 truncate max-w-[60%]">
-                            ({order.shipping.zipcode}) {order.shipping.address1}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
             </div>
           )}
 

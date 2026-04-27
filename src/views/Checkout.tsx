@@ -179,8 +179,6 @@ export default function Checkout() {
         name,
         email,
         phone,
-        planName: plan.name,
-        planExpiresAt: expiresAt.toISOString(),
       });
       sessionStorage.setItem(`order-${orderNo}`, JSON.stringify(order));
       sessionStorage.setItem('latest-order-no', orderNo);

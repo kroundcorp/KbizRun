@@ -154,7 +154,7 @@ export default function Home() {
                 </div>
 
                 <div className="rounded-2xl bg-blue-50 border border-blue-100 p-4 mb-4">
-                  <p className="text-xs text-blue-700 font-bold mb-1">{memberState.profile.planName}</p>
+                  <p className="text-xs text-blue-700 font-bold mb-1">정규가/협동조합 전용 상품</p>
                   <p className="text-sm text-gray-800 font-bold leading-snug">{memberState.recentVideoTitle}</p>
                   <Link href={memberState.recentVideoHref} className="mt-3 inline-flex text-xs font-bold text-blue-600 hover:underline">
                     학습 이어가기

@@ -26,8 +26,6 @@ export interface DemoProfile {
   name: string;
   email: string;
   phone: string;
-  planName: string;
-  planExpiresAt: string;
 }
 
 export interface UserCoupon {
@@ -136,8 +134,6 @@ export function getDemoProfile(): DemoProfile {
     name: '김조달',
     email: 'seoulartb@gmail.com',
     phone: '010-1234-5678',
-    planName: '3개월 이용권',
-    planExpiresAt: '2026-07-01',
   });
 }
 
@@ -353,7 +349,7 @@ export function getNotifications(): DemoNotification[] {
   return readJson<DemoNotification[]>(KEYS.notifications, [
     { id: 'notice-1', title: '신규 강의 업로드 — 필기 기본이론', createdAt: new Date().toISOString(), read: false },
     { id: 'notice-2', title: '내 게시글에 새 댓글이 달렸어요', createdAt: new Date().toISOString(), read: false },
-    { id: 'notice-3', title: '이용권이 7일 뒤 만료됩니다', createdAt: new Date().toISOString(), read: true },
+    { id: 'notice-3', title: '협동조합 전용 쿠폰 사용 가능 여부를 확인해보세요', createdAt: new Date().toISOString(), read: true },
   ]);
 }
 

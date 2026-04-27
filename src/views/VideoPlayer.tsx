@@ -7,7 +7,7 @@ import { X, CheckCircle2, Clock, HelpCircle, User, ChevronRight, PlayCircle } fr
 import { getVideo, getVideosForSubject, formatTimestamp, type VideoCuePoint } from '../data/videos';
 import { getSubject } from '../data/subjects';
 import VideoQuizModal from '../components/VideoQuizModal';
-import { getDemoProfile, getLessonProgressMap, saveLessonProgress } from '../lib/demoStore';
+import { getLessonProgressMap, saveLessonProgress } from '../lib/demoStore';
 
 const STORAGE_KEY = (videoId: string) => `video-cues-${videoId}`;
 
@@ -71,7 +71,7 @@ export default function VideoPlayer() {
     const initial = loadResponses(video.id);
     setResponses(initial);
     const saved = getLessonProgressMap()[video.id];
-    setHasAccess(new Date(getDemoProfile().planExpiresAt).getTime() >= Date.now());
+    setHasAccess(true);
     setSavedStart(saved?.completed ? null : saved?.watchedSeconds ?? null);
     setContinueNotice(Boolean(saved && !saved.completed && saved.watchedSeconds > 10));
   }, [video]);
