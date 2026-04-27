@@ -233,8 +233,16 @@ export default function Home() {
                 <span className="text-sm font-medium text-gray-800 leading-tight">공공조달 표준교재</span>
               </Link>
               <Link href="/books" className="bg-gray-50 rounded-xl p-3 flex items-center gap-2 cursor-pointer hover:bg-gray-100">
+                <div className="bg-red-100 text-red-600 text-[10px] font-bold px-1.5 py-0.5 rounded">문제</div>
+                <span className="text-sm font-medium text-gray-800 leading-tight">기출·예상 문제집</span>
+              </Link>
+              <Link href="/books" className="bg-gray-50 rounded-xl p-3 flex items-center gap-2 cursor-pointer hover:bg-gray-100">
                 <div className="bg-blue-100 text-blue-600 text-[10px] font-bold px-1.5 py-0.5 rounded">요약</div>
                 <span className="text-sm font-medium text-gray-800 leading-tight">핵심요약 교재</span>
+              </Link>
+              <Link href="/books" className="bg-gray-50 rounded-xl p-3 flex items-center gap-2 cursor-pointer hover:bg-gray-100">
+                <div className="bg-purple-100 text-purple-600 text-[10px] font-bold px-1.5 py-0.5 rounded">패키지</div>
+                <span className="text-sm font-medium text-gray-800 leading-tight">올인원 교재 세트</span>
               </Link>
             </div>
           </div>
@@ -349,50 +357,6 @@ export default function Home() {
 
         </div>
 
-        {/* Quick Links Row */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 pt-4">
-          <Link href="/curriculum" className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm flex items-center justify-between cursor-pointer group hover:border-blue-200">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
-                <FileText className="h-5 w-5 text-green-500" />
-              </div>
-              <div>
-                <h4 className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">제1장 물품구매계약 일반</h4>
-                <p className="text-xs text-gray-500">정부계약·입찰·계약관리 기초</p>
-              </div>
-            </div>
-            <ChevronRight className="h-5 w-5 text-gray-300 group-hover:text-blue-500" />
-          </Link>
-          
-          <Link href="/curriculum" className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm flex items-center justify-between cursor-pointer group hover:border-blue-200">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
-                <FileText className="h-5 w-5 text-blue-500" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h4 className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">제3장 예정가격작성 실무</h4>
-                  <span className="bg-green-100 text-green-600 text-[10px] font-bold px-1.5 py-0.5 rounded">NEW</span>
-                </div>
-                <p className="text-xs text-gray-500">결정기준·기초조사·원가계산</p>
-              </div>
-            </div>
-            <ChevronRight className="h-5 w-5 text-gray-300 group-hover:text-blue-500" />
-          </Link>
-
-          <Link href="/curriculum" className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm flex items-center justify-between cursor-pointer group hover:border-blue-200">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-yellow-50 rounded-lg flex items-center justify-center">
-                <MessageCircle className="h-5 w-5 text-yellow-500" />
-              </div>
-              <div>
-                <h4 className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">제4장 낙찰자 선정 제도</h4>
-                <p className="text-xs text-gray-500">적격심사·협상·경쟁적 대화</p>
-              </div>
-            </div>
-            <ChevronRight className="h-5 w-5 text-gray-300 group-hover:text-blue-500" />
-          </Link>
-        </div>
       </div>
 
       {/* Recommended Content Section */}
