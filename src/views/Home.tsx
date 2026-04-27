@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   ChevronRight, ChevronDown,
   FileText, CheckCircle2, BookOpen, Gift,
@@ -8,6 +8,18 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import HeroBanner from '../components/HeroBanner';
+import { videos } from '../data/videos';
+import { useAuth } from '../lib/AuthContext';
+import {
+  getBookCart,
+  getDemoProfile,
+  getFavoriteBooks,
+  getLearningSummary,
+  getLessonProgress,
+  getUserCoupons,
+  getWrongNoteCount,
+  type DemoProfile,
+} from '../lib/demoStore';
 
 const RECOMMENDED_CONTENT = [
   {
@@ -61,7 +73,65 @@ const CONTENT_STYLE: Record<(typeof RECOMMENDED_CONTENT)[number]['color'], {
   slate: { decor: 'bg-slate-100', badge: 'bg-slate-100 text-slate-700', accent: 'group-hover:text-slate-700', dot: 'bg-slate-500', hover: 'hover:border-slate-300', iconBg: 'bg-slate-100 text-slate-700' },
 };
 
+interface HomeMemberState {
+  profile: DemoProfile;
+  cartCount: number;
+  favoriteCount: number;
+  couponCount: number;
+  wrongCount: number;
+  averageScore: number;
+  watchedMinutes: number;
+  recentVideoTitle: string;
+  recentVideoHref: string;
+}
+
+const defaultMemberState: HomeMemberState = {
+  profile: getDemoProfile(),
+  cartCount: 0,
+  favoriteCount: 0,
+  couponCount: 0,
+  wrongCount: 0,
+  averageScore: 0,
+  watchedMinutes: 0,
+  recentVideoTitle: '필기 기본이론부터 시작하기',
+  recentVideoHref: '/lectures',
+};
+
 export default function Home() {
+  const { user, loading } = useAuth();
+  const isLoggedIn = Boolean(user);
+  const [memberState, setMemberState] = useState<HomeMemberState>(defaultMemberState);
+
+  useEffect(() => {
+    if (!user) return;
+    const profile = getDemoProfile();
+    const cartCount = getBookCart().reduce((total, item) => total + item.quantity, 0);
+    const favoriteCount = getFavoriteBooks().length;
+    const couponCount = getUserCoupons().filter((coupon) => !coupon.used).length;
+    const wrongCount = getWrongNoteCount();
+    const summary = getLearningSummary();
+    const recentProgress = [...getLessonProgress()].sort(
+      (a, b) => new Date(b.lastWatchedAt).getTime() - new Date(a.lastWatchedAt).getTime(),
+    )[0];
+    const recentVideo = recentProgress ? videos.find((video) => video.id === recentProgress.videoId) : undefined;
+
+    setMemberState({
+      profile,
+      cartCount,
+      favoriteCount,
+      couponCount,
+      wrongCount,
+      averageScore: summary.averageScore,
+      watchedMinutes: Math.round(summary.watchedSeconds / 60),
+      recentVideoTitle: recentVideo?.title ?? '필기 기본이론부터 시작하기',
+      recentVideoHref: recentVideo ? `/video/${recentVideo.id}` : '/lectures',
+    });
+  }, [user]);
+
+  const firstName = useMemo(() => {
+    return memberState.profile.name || user?.email?.split('@')[0] || '회원';
+  }, [memberState.profile.name, user?.email]);
+
   return (
     <main className="bg-[#f8f9fa] min-h-screen py-8">
       <div className="max-w-[1200px] mx-auto px-4 space-y-8">
@@ -71,39 +141,78 @@ export default function Home() {
 
           {/* Left Sidebar - Upload Schedule */}
           <div className="col-span-12 lg:col-span-3 lg:order-1 bg-white rounded-2xl border border-gray-200 p-5 shadow-sm flex flex-col">
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="font-bold text-gray-900">업로드 일정</h3>
-              <Link href="/lectures" className="text-[11px] text-gray-400 flex items-center hover:text-gray-600">
-                바로가기 <ChevronRight className="h-3 w-3" />
-              </Link>
-            </div>
-            
-            <ul className="space-y-4 flex-1">
-              <li className="flex justify-between items-center text-sm">
-                <span className="text-gray-700">기출 무료열람실</span>
-                <span className="text-green-500 text-xs flex items-center gap-1">
-                  <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div> 완료
-                </span>
-              </li>
-              <li className="flex justify-between items-center text-sm">
-                <span className="text-gray-700">기출유사</span>
-                <span className="text-green-500 text-xs flex items-center gap-1">
-                  <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div> 완료
-                </span>
-              </li>
-              <li className="flex justify-between items-center text-sm">
-                <span className="text-gray-700">기출변형</span>
-                <span className="text-green-500 text-xs flex items-center gap-1">
-                  <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div> 완료
-                </span>
-              </li>
-            </ul>
-            
-            <div className="mt-6 flex justify-center">
-              <button className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-gray-100">
-                <ChevronDown className="h-4 w-4" />
-              </button>
-            </div>
+            {isLoggedIn ? (
+              <>
+                <div className="flex justify-between items-start mb-5">
+                  <div>
+                    <p className="text-[11px] font-bold text-blue-600 mb-1">MY STUDY</p>
+                    <h3 className="font-black text-gray-900">{firstName}님, 이어서 학습하세요</h3>
+                  </div>
+                  <Link href="/mypage" className="text-[11px] text-gray-400 flex items-center hover:text-gray-600">
+                    내 정보 <ChevronRight className="h-3 w-3" />
+                  </Link>
+                </div>
+
+                <div className="rounded-2xl bg-blue-50 border border-blue-100 p-4 mb-4">
+                  <p className="text-xs text-blue-700 font-bold mb-1">{memberState.profile.planName}</p>
+                  <p className="text-sm text-gray-800 font-bold leading-snug">{memberState.recentVideoTitle}</p>
+                  <Link href={memberState.recentVideoHref} className="mt-3 inline-flex text-xs font-bold text-blue-600 hover:underline">
+                    학습 이어가기
+                  </Link>
+                </div>
+
+                <div className="grid grid-cols-3 gap-2 text-center">
+                  <div className="rounded-xl bg-gray-50 p-3">
+                    <p className="text-lg font-black text-gray-900">{memberState.watchedMinutes}</p>
+                    <p className="text-[10px] text-gray-500">학습분</p>
+                  </div>
+                  <div className="rounded-xl bg-gray-50 p-3">
+                    <p className="text-lg font-black text-gray-900">{memberState.averageScore || '-'}</p>
+                    <p className="text-[10px] text-gray-500">평균점수</p>
+                  </div>
+                  <div className="rounded-xl bg-gray-50 p-3">
+                    <p className="text-lg font-black text-gray-900">{memberState.wrongCount}</p>
+                    <p className="text-[10px] text-gray-500">오답</p>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="font-bold text-gray-900">업로드 일정</h3>
+                  <Link href="/lectures" className="text-[11px] text-gray-400 flex items-center hover:text-gray-600">
+                    바로가기 <ChevronRight className="h-3 w-3" />
+                  </Link>
+                </div>
+
+                <ul className="space-y-4 flex-1">
+                  <li className="flex justify-between items-center text-sm">
+                    <span className="text-gray-700">기출 무료열람실</span>
+                    <span className="text-green-500 text-xs flex items-center gap-1">
+                      <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div> 완료
+                    </span>
+                  </li>
+                  <li className="flex justify-between items-center text-sm">
+                    <span className="text-gray-700">기출유사</span>
+                    <span className="text-green-500 text-xs flex items-center gap-1">
+                      <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div> 완료
+                    </span>
+                  </li>
+                  <li className="flex justify-between items-center text-sm">
+                    <span className="text-gray-700">기출변형</span>
+                    <span className="text-green-500 text-xs flex items-center gap-1">
+                      <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div> 완료
+                    </span>
+                  </li>
+                </ul>
+
+                <div className="mt-6 flex justify-center">
+                  <Link href="/signup" className="w-full rounded-xl bg-blue-600 py-3 text-center text-sm font-bold text-white hover:bg-blue-700">
+                    회원가입하고 시작하기
+                  </Link>
+                </div>
+              </>
+            )}
           </div>
 
           {/* Center - Hero Banner */}
@@ -135,6 +244,14 @@ export default function Home() {
             <h3 className="font-bold text-lg text-gray-900 mb-5">📝 예상문제</h3>
             
             <div className="space-y-3">
+              {isLoggedIn && (
+                <Link href="/mypage?tab=wrong" className="block rounded-xl bg-orange-50 border border-orange-100 p-3.5 hover:bg-orange-100 group">
+                  <p className="text-sm font-bold text-gray-900 group-hover:text-orange-700 mb-1">내 오답노트</p>
+                  <p className="text-xs text-gray-600 leading-relaxed">
+                    누적 오답 {memberState.wrongCount}개 · 평균 점수 {memberState.averageScore || '-'}점
+                  </p>
+                </Link>
+              )}
               <Link href="/free-mock" className="block rounded-xl bg-gray-50 p-3.5 hover:bg-gray-100 group">
                 <p className="text-sm font-bold text-gray-900 group-hover:text-blue-600 mb-1">시험 모드</p>
                 <p className="text-xs text-gray-500 leading-relaxed">
@@ -156,12 +273,18 @@ export default function Home() {
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-bold text-lg text-gray-900">영상 강의</h3>
-              <Link href="/lectures" className="text-[11px] text-blue-600 font-bold flex items-center hover:underline">
-                전체 보기 <ChevronRight className="h-3 w-3" />
+              <Link href={isLoggedIn ? memberState.recentVideoHref : '/lectures'} className="text-[11px] text-blue-600 font-bold flex items-center hover:underline">
+                {isLoggedIn ? '이어보기' : '전체 보기'} <ChevronRight className="h-3 w-3" />
               </Link>
             </div>
             
             <div className="space-y-3">
+              {isLoggedIn && (
+                <Link href={memberState.recentVideoHref} className="block rounded-xl bg-blue-50 border border-blue-100 p-3.5 hover:bg-blue-100 group">
+                  <p className="text-sm font-black text-gray-900 group-hover:text-blue-700 mb-1">최근 수강 강의</p>
+                  <p className="text-xs text-gray-600 leading-relaxed line-clamp-2">{memberState.recentVideoTitle}</p>
+                </Link>
+              )}
               <Link href="/lectures" className="block rounded-xl bg-gray-50 p-3.5 hover:bg-gray-100 group">
                 <p className="text-sm font-black text-gray-900 group-hover:text-blue-600 mb-2">필기</p>
                 <ul className="space-y-1 text-xs text-gray-500 leading-relaxed">
@@ -186,7 +309,7 @@ export default function Home() {
 
             {/* Card 4: 교재 구매 */}
             <Link
-               href="/books"
+               href={isLoggedIn ? '/mypage?tab=cart' : '/books'}
               className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm flex-1 cursor-pointer group block hover:border-blue-300 transition-colors"
             >
               <div className="flex justify-between items-start mb-2">
@@ -195,24 +318,32 @@ export default function Home() {
                   교재 구매
                 </h3>
                 <span className="text-[11px] text-gray-400 flex items-center group-hover:text-gray-600">
-                  바로가기 <ChevronRight className="h-3 w-3" />
+                  {isLoggedIn ? '내 교재' : '바로가기'} <ChevronRight className="h-3 w-3" />
                 </span>
               </div>
-              <p className="text-sm text-gray-500">조달 전문가 집필 교재로 합격 준비</p>
+              <p className="text-sm text-gray-500">
+                {isLoggedIn
+                  ? `장바구니 ${memberState.cartCount}개 · 찜한 교재 ${memberState.favoriteCount}개`
+                  : '조달 전문가 집필 교재로 합격 준비'}
+              </p>
             </Link>
 
             {/* Card 5: Event Banner */}
-            <div className="bg-[#1e3a8a] rounded-2xl p-6 shadow-sm flex-1 relative overflow-hidden cursor-pointer group">
+            <Link href={isLoggedIn ? '/mypage?tab=coupons' : '/events'} className="bg-[#1e3a8a] rounded-2xl p-6 shadow-sm flex-1 relative overflow-hidden cursor-pointer group block">
               <div className="relative z-10">
-                <p className="text-blue-200 text-xs mb-1">회원님의 합격을 응원해요.</p>
+                <p className="text-blue-200 text-xs mb-1">{isLoggedIn ? '사용 가능한 혜택을 확인하세요.' : '회원님의 합격을 응원해요.'}</p>
                 <h3 className="font-bold text-white text-lg leading-tight">
-                  KbizRun이 준비한<br/>다양한 이벤트와 혜택
+                  {isLoggedIn ? (
+                    <>보유 쿠폰 {memberState.couponCount}개<br/>마이페이지에서 확인</>
+                  ) : (
+                    <>KbizRun이 준비한<br/>다양한 이벤트와 혜택</>
+                  )}
                 </h3>
               </div>
               <div className="absolute -right-2 -bottom-2 w-20 h-20 bg-yellow-400 rounded-full flex items-center justify-center border-4 border-[#1e3a8a] group-hover:scale-110 transition-transform">
                 <Gift className="h-8 w-8 text-red-500" />
               </div>
-            </div>
+            </Link>
 
           </div>
 
@@ -270,10 +401,16 @@ export default function Home() {
           <div className="flex justify-between items-end mb-6">
             <div className="flex items-baseline gap-3 flex-wrap">
               <h2 className="text-2xl font-bold text-gray-900">추천 콘텐츠</h2>
-              <p className="text-gray-500 text-sm">실제 목차 기반 <span className="font-bold text-gray-700">10장 + 부록 학습 흐름</span></p>
+              <p className="text-gray-500 text-sm">
+                {isLoggedIn && !loading ? (
+                  <>학습 기록 기반 <span className="font-bold text-gray-700">다음 추천 흐름</span></>
+                ) : (
+                  <>실제 목차 기반 <span className="font-bold text-gray-700">10장 + 부록 학습 흐름</span></>
+                )}
+              </p>
             </div>
-            <Link href="/curriculum" className="text-sm text-gray-500 flex items-center hover:text-gray-800 whitespace-nowrap">
-              전체 서비스 <ChevronRight className="h-4 w-4" />
+            <Link href={isLoggedIn ? '/mypage' : '/curriculum'} className="text-sm text-gray-500 flex items-center hover:text-gray-800 whitespace-nowrap">
+              {isLoggedIn ? '내 학습실' : '전체 서비스'} <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
 
