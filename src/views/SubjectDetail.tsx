@@ -13,12 +13,12 @@ import { getSubject } from '../data/subjects';
 import { getExamsForSubject } from '../data/exams';
 import { getVideosForSubject } from '../data/videos';
 
-const TABS = ['기출문제', '핵심요약', '강의', '오답노트'] as const;
+const TABS = ['예상문제', '핵심요약', '강의', '오답노트'] as const;
 type Tab = (typeof TABS)[number];
 
 export default function SubjectDetail() {
   const { subjectId } = useParams<{ subjectId: string }>();
-  const [tab, setTab] = useState<Tab>('기출문제');
+  const [tab, setTab] = useState<Tab>('예상문제');
 
   if (!subjectId) redirect('/');
   const subject = getSubject(subjectId);
@@ -98,7 +98,7 @@ export default function SubjectDetail() {
               ))}
             </div>
 
-            {tab === '기출문제' && (
+            {tab === '예상문제' && (
               <div className="space-y-4">
                 {exams.length === 0 && (
                   <div className="bg-white rounded-2xl border border-gray-200 p-10 text-center">

@@ -18,10 +18,10 @@ export const mockCoupons: Record<string, Coupon> = {
     expiresAt: '2026-06-30',
     used: false,
   },
-  'EXAM-FREE-2': {
-    code: 'EXAM-FREE-2',
-    title: '기출문제 2건 무료',
-    benefit: '무료 모의고사 2회 제공',
+  'SAMPLE-FREE': {
+    code: 'SAMPLE-FREE',
+    title: '예상문제 샘플 무료',
+    benefit: '예상문제 샘플과 해설 제공',
     expiresAt: '2026-12-31',
     used: false,
   },

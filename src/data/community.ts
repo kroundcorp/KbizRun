@@ -60,7 +60,7 @@ export const posts: Post[] = [
     createdAt: '2026-03-28',
     views: 1240,
     comments: 42,
-    body: 'KbizRun 기출 무료 열람실로 시작해서 3개월 만에 합격했습니다. 제가 실제로 썼던 학습 루틴 공유합니다.',
+    body: 'KbizRun 예상문제 샘플로 시작해서 체계적으로 학습했습니다. 제가 실제로 쓰는 학습 루틴 공유합니다.',
     replies: [],
   },
   {

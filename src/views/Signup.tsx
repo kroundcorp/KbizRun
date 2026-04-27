@@ -194,7 +194,7 @@ export default function Signup() {
         <div className="text-center mb-8">
           <img src="/logo.png" alt="K-Biz Run" className="h-8 mx-auto mb-5" />
           <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Kbizrun에 오신 걸 환영해요!</h1>
-          <p className="text-gray-500 mt-2 text-[15px]">지금 가입하고 기출문제 2건 무료 혜택을 받으세요</p>
+          <p className="text-gray-500 mt-2 text-[15px]">지금 가입하고 예상문제 샘플을 무료로 확인하세요</p>
         </div>
 
         {!showEmailForm ? (

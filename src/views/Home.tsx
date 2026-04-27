@@ -187,19 +187,19 @@ export default function Home() {
 
                 <ul className="space-y-4 flex-1">
                   <li className="flex justify-between items-center text-sm">
-                    <span className="text-gray-700">기출 무료열람실</span>
+                    <span className="text-gray-700">예상문제 샘플</span>
                     <span className="text-green-500 text-xs flex items-center gap-1">
                       <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div> 완료
                     </span>
                   </li>
                   <li className="flex justify-between items-center text-sm">
-                    <span className="text-gray-700">기출유사</span>
+                    <span className="text-gray-700">실전 예상문제</span>
                     <span className="text-green-500 text-xs flex items-center gap-1">
                       <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div> 완료
                     </span>
                   </li>
                   <li className="flex justify-between items-center text-sm">
-                    <span className="text-gray-700">기출변형</span>
+                    <span className="text-gray-700">AI 변형문제</span>
                     <span className="text-green-500 text-xs flex items-center gap-1">
                       <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div> 완료
                     </span>
@@ -234,7 +234,7 @@ export default function Home() {
               </Link>
               <Link href="/books" className="bg-gray-50 rounded-xl p-3 flex items-center gap-2 cursor-pointer hover:bg-gray-100">
                 <div className="bg-red-100 text-red-600 text-[10px] font-bold px-1.5 py-0.5 rounded">문제</div>
-                <span className="text-sm font-medium text-gray-800 leading-tight">기출·예상 문제집</span>
+                <span className="text-sm font-medium text-gray-800 leading-tight">예상문제집</span>
               </Link>
               <Link href="/books" className="bg-gray-50 rounded-xl p-3 flex items-center gap-2 cursor-pointer hover:bg-gray-100">
                 <div className="bg-blue-100 text-blue-600 text-[10px] font-bold px-1.5 py-0.5 rounded">요약</div>

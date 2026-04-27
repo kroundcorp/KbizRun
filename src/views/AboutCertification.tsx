@@ -383,7 +383,7 @@ export default function AboutCertification() {
           <p className="text-gray-700 text-[15px] leading-8">
             공공조달관리사는{' '}
             <span className="font-bold">도입 초기 자격</span>으로, 기존의 출제 데이터나
-            기출문제가 거의 없습니다. 따라서 초반에는{' '}
+            기출문제가 없습니다. 따라서 초반에는{' '}
             <span className="font-bold text-blue-700">
               "무엇을 공부할 것인가"보다 시험의 기준과 전체 구조를 파악하는 것
             </span>

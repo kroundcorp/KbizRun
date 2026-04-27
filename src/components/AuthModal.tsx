@@ -328,7 +328,7 @@ export default function AuthModal({
                       {mode === 'login' ? '반가워요! 다시 오셨네요' : 'Kbizrun에 오신 걸 환영해요!'}
                     </h2>
                     <p className="text-gray-500 mt-2 text-[15px]">
-                      {mode === 'login' ? '로그인하고 합격 준비를 이어가세요' : '지금 가입하고 기출문제 2건 무료 혜택을 받으세요'}
+                      {mode === 'login' ? '로그인하고 합격 준비를 이어가세요' : '지금 가입하고 예상문제 샘플을 무료로 확인하세요'}
                     </p>
                   </div>
 

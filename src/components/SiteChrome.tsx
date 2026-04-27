@@ -29,14 +29,14 @@ function TopBanner() {
   return (
     <div className="bg-[#1a103c] text-white text-xs sm:text-sm py-2.5 px-10 sm:px-4 relative flex justify-center items-center">
       <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4">
-        <span className="hidden sm:inline text-gray-300">지금 가입하면 기출문제 2건 무료 제공!</span>
+        <span className="hidden sm:inline text-gray-300">지금 가입하면 예상문제 샘플 무료 제공!</span>
         <span className="font-bold text-sm sm:text-base">합격률이 오르는 이유! 지금 확인하세요</span>
         <Link
           href="/events"
           className="bg-gradient-to-r from-purple-500 to-blue-500 text-white text-[10px] sm:text-xs font-bold px-3 sm:px-4 py-1 sm:py-1.5 rounded-full flex items-center gap-1 whitespace-nowrap"
         >
-          <span className="hidden sm:inline">가입하면 기출문제 2건 무료!</span>
-          <span className="sm:hidden">기출 2건 무료!</span>
+          <span className="hidden sm:inline">가입하면 예상문제 샘플 무료!</span>
+          <span className="sm:hidden">샘플 무료!</span>
           <span className="bg-white text-blue-600 text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded-full ml-1">EVENT</span>
         </Link>
       </div>

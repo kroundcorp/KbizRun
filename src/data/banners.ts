@@ -12,7 +12,7 @@ export const bannerSlides: BannerSlide[] = [
     id: 'event-new-signup',
     badge: '3/31일까지! 신규가입 이벤트 진행',
     title: '합격률이 오르는 이유!\n지금 확인하세요!',
-    subtitle: '가입하면 기출문제 2건 무료',
+    subtitle: '가입하면 예상문제 샘플 무료',
     bgColor: '#37257a',
     link: '/events',
   },

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { BookOpen, Check, Package, ShoppingBag } from 'lucide-react';
+import { Award, BookOpen, Check, CheckCircle2, Package, ShoppingBag } from 'lucide-react';
 import { books, Book } from '../data/books';
 
 const categories: Array<{ key: 'all' | Book['category']; label: string }> = [
@@ -114,6 +114,39 @@ export default function Books() {
         ))}
       </div>
 
+      <section className="mt-12 bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 rounded-3xl p-6 md:p-8 text-white overflow-hidden relative">
+        <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10" />
+        <div className="absolute -left-16 -bottom-20 h-48 w-48 rounded-full bg-white/10" />
+        <div className="relative grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-6 items-center">
+          <div className="flex justify-center lg:justify-start">
+            <div className="relative w-40 h-48 bg-white/10 rounded-2xl overflow-hidden border border-white/20">
+              <img src="/hong.png" alt="홍순후 교수" className="absolute bottom-0 w-full h-auto object-cover" />
+            </div>
+          </div>
+          <div>
+            <span className="inline-flex items-center gap-2 bg-white/15 border border-white/20 text-blue-100 text-xs font-bold px-3 py-1 rounded-full mb-4">
+              <Award className="h-3.5 w-3.5" />
+              홍순후 교수 직접 감수
+            </span>
+            <h2 className="text-2xl md:text-3xl font-black mb-3">
+              대체 불가능한 40년 경력의 조달 전문가가 교재 품질을 검수합니다.
+            </h2>
+            <p className="text-sm md:text-base text-blue-50 leading-relaxed mb-5">
+              공공조달관리사 첫 시험 대비에 맞춰 출제 기준, 최신 법령, 실무 사례를 반영하고
+              기본서·예상문제집·핵심요약서의 학습 흐름이 서로 연결되도록 구성했습니다.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
+              {['최신 법령 반영', '실무 사례 기반 설명', '예상문제·요약 교차 검수'].map((item) => (
+                <div key={item} className="flex items-center gap-2 rounded-xl bg-white/10 border border-white/10 px-3 py-2">
+                  <CheckCircle2 className="h-4 w-4 text-blue-200 shrink-0" />
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       <div className="mt-12 bg-white border border-gray-200 rounded-2xl p-6 flex items-start gap-4">
         <BookOpen className="h-6 w-6 text-blue-600 shrink-0 mt-0.5" />
         <div className="text-sm text-gray-600 leading-relaxed">
@@ -132,7 +165,7 @@ export default function Books() {
       <div className="mt-6 text-center">
         <Check className="inline h-4 w-4 text-green-500" />
         <span className="ml-2 text-xs text-gray-500">
-          공공조달관리사 기출/강의 이용권과 함께 구매 시 추가 할인 쿠폰 제공
+          공공조달관리사 예상문제/강의 이용권과 함께 구매 시 추가 할인 쿠폰 제공
         </span>
       </div>
     </main>

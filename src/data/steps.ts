@@ -71,7 +71,7 @@ export const steps: Step[] = [
     title: '영역별 학습',
     subtitle: '동일 유형을 난이도별로 풀며',
     description:
-      '이론학습에서 배운 내용을 영역별로 쪼개어 난이도 점진 상승 방식으로 훈련합니다. AI가 실제 출제 패턴을 분석하여 만든 기출·기출유사 문제 82,000+ 을 풀며 유형 감을 잡는 단계입니다.',
+      '이론학습에서 배운 내용을 영역별로 쪼개어 난이도 점진 상승 방식으로 훈련합니다. AI가 출제 기준과 최신 법령을 반영해 만든 예상·유사 문제를 풀며 유형 감을 잡는 단계입니다.',
     tagline: '점진적으로 실력 향상',
     color: 'orange',
     tags: ['유형별 감 잡기', '풀이 패턴 익히기'],
@@ -88,14 +88,14 @@ export const steps: Step[] = [
       '오답노트 자동 누적으로 약점 영역 시각화',
     ],
     howToUse: [
-      '영역별 기출 세트부터 시작하여 난이도 1 → 3 순으로 풀이합니다.',
+      '영역별 예상문제 세트부터 시작하여 난이도 1 → 3 순으로 풀이합니다.',
       '틀린 문제는 자동으로 오답노트에 누적되며, 해설 영상으로 복습합니다.',
       '같은 유형 AI 변형 문제로 풀이 자동 반응 속도를 올립니다.',
     ],
     suggestedSubjectIds: ['cost-calculation', 'bidding-practice', 'contract-review'],
     resources: [
-      { title: '영역별 기출 문제집 (과목별 8종)', type: 'exam' },
-      { title: 'AI 유사문제 세트 ×20회', type: 'exam' },
+      { title: '영역별 예상문제집', type: 'exam' },
+      { title: 'AI 변형문제 세트 ×20회', type: 'exam' },
       { title: '자주 틀리는 조문 정리 v2.0', type: 'pdf', size: '2.1MB' },
     ],
     prevStepId: 'theory',
@@ -132,7 +132,7 @@ export const steps: Step[] = [
     suggestedSubjectIds: ['negotiated-contract', 'international', 'materials-mgmt'],
     resources: [
       { title: '실전 모의고사 회차 1~4', type: 'exam' },
-      { title: '고난도 기출 TOP 100', type: 'exam' },
+      { title: '고난도 예상문제 TOP 100', type: 'exam' },
       { title: '최근 개정법령 비교표 v3', type: 'pdf', size: '1.8MB' },
     ],
     prevStepId: 'by-area',

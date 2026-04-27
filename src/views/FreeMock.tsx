@@ -14,7 +14,7 @@ export default function FreeMock() {
         </div>
         <span className="bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">무료 체험</span>
         <h1 className="text-3xl md:text-4xl font-black text-gray-900 mt-3 mb-2 pr-20 md:pr-0">무료 모의고사</h1>
-        <p className="text-gray-700 text-base md:text-lg">회원가입만 하면 기출 2건을 즉시 풀어볼 수 있어요.</p>
+        <p className="text-gray-700 text-base md:text-lg">회원가입만 하면 예상문제 샘플을 즉시 풀어볼 수 있어요.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -41,7 +41,7 @@ export default function FreeMock() {
 
       <div className="mt-12 bg-[#1e3a8a] rounded-3xl p-10 text-white text-center">
         <h2 className="text-2xl font-black mb-3">더 많은 문제가 필요하신가요?</h2>
-        <p className="text-blue-100 mb-6">이용권 구매 시 8과목 × 회차별 기출문제 전체가 열립니다.</p>
+        <p className="text-blue-100 mb-6">이용권 구매 시 필기·실기 예상문제와 모의고사 전체가 열립니다.</p>
         <Link
            href="/pricing"
           className="inline-block bg-white text-[#1e3a8a] font-bold px-8 py-3 rounded-xl hover:bg-blue-50"
