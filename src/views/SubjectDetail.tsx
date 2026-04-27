@@ -237,7 +237,6 @@ export default function SubjectDetail() {
 
           <div className="col-span-12 lg:col-span-4 space-y-6">
             <div className="bg-gradient-to-br from-[#1a103c] to-[#37257a] rounded-3xl p-6 text-white shadow-xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-bl-full -z-0"></div>
               <div className="relative z-10">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-md">

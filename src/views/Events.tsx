@@ -20,8 +20,6 @@ export default function Events() {
   return (
     <main className="max-w-[1200px] mx-auto px-4 py-8 md:py-10">
       <div className="bg-gradient-to-br from-[#1a103c] to-[#37257a] rounded-3xl p-6 md:p-10 text-white mb-6 md:mb-8 relative overflow-hidden">
-        <div className="absolute -right-10 -top-10 w-36 h-36 md:w-48 md:h-48 rounded-full bg-yellow-400/20"></div>
-        <div className="absolute -right-20 -bottom-10 w-44 h-44 md:w-56 md:h-56 rounded-full bg-blue-400/10"></div>
         <div className="relative z-10 flex items-center gap-4 md:gap-6">
           <div className="w-14 h-14 md:w-20 md:h-20 rounded-2xl bg-yellow-400 flex items-center justify-center shrink-0">
             <Gift className="h-7 w-7 md:h-10 md:w-10 text-red-500" />

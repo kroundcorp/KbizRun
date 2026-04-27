@@ -105,8 +105,6 @@ export default function AboutCertification() {
             실무를 효율적으로 수행하기 위한 전문가 인증 자격
           </p>
         </div>
-        <div className="absolute -top-10 -right-10 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-20 -left-10 w-72 h-72 bg-purple-400/20 rounded-full blur-3xl"></div>
       </section>
 
       {/* 공공조달관리사란? */}
@@ -457,7 +455,6 @@ export default function AboutCertification() {
             </Link>
           </div>
         </div>
-        <div className="absolute -top-8 -right-8 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
       </section>
     </main>
   );

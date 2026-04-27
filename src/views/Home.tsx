@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   ChevronRight, ChevronDown,
-  FileText, CheckCircle2, BookOpen, Gift,
+  FileText, CheckCircle2, BookOpen,
   MessageCircle, PlayCircle, Scale,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -65,12 +65,12 @@ const RECOMMENDED_CONTENT = [
 ] as const;
 
 const CONTENT_STYLE: Record<(typeof RECOMMENDED_CONTENT)[number]['color'], {
-  decor: string; badge: string; accent: string; dot: string; hover: string; iconBg: string;
+  badge: string; accent: string; dot: string; hover: string; iconBg: string;
 }> = {
-  blue: { decor: 'bg-blue-50', badge: 'bg-blue-50 text-blue-600', accent: 'group-hover:text-blue-600', dot: 'bg-blue-500', hover: 'hover:border-blue-300', iconBg: 'bg-blue-50 text-blue-500' },
-  green: { decor: 'bg-green-50', badge: 'bg-green-50 text-green-600', accent: 'group-hover:text-green-600', dot: 'bg-green-500', hover: 'hover:border-green-300', iconBg: 'bg-green-50 text-green-600' },
-  orange: { decor: 'bg-orange-50', badge: 'bg-orange-50 text-orange-500', accent: 'group-hover:text-orange-500', dot: 'bg-orange-500', hover: 'hover:border-orange-300', iconBg: 'bg-orange-50 text-orange-500' },
-  slate: { decor: 'bg-slate-100', badge: 'bg-slate-100 text-slate-700', accent: 'group-hover:text-slate-700', dot: 'bg-slate-500', hover: 'hover:border-slate-300', iconBg: 'bg-slate-100 text-slate-700' },
+  blue: { badge: 'bg-blue-50 text-blue-600', accent: 'group-hover:text-blue-600', dot: 'bg-blue-500', hover: 'hover:border-blue-300', iconBg: 'bg-blue-50 text-blue-500' },
+  green: { badge: 'bg-green-50 text-green-600', accent: 'group-hover:text-green-600', dot: 'bg-green-500', hover: 'hover:border-green-300', iconBg: 'bg-green-50 text-green-600' },
+  orange: { badge: 'bg-orange-50 text-orange-500', accent: 'group-hover:text-orange-500', dot: 'bg-orange-500', hover: 'hover:border-orange-300', iconBg: 'bg-orange-50 text-orange-500' },
+  slate: { badge: 'bg-slate-100 text-slate-700', accent: 'group-hover:text-slate-700', dot: 'bg-slate-500', hover: 'hover:border-slate-300', iconBg: 'bg-slate-100 text-slate-700' },
 };
 
 interface HomeMemberState {
@@ -348,9 +348,6 @@ export default function Home() {
                   )}
                 </h3>
               </div>
-              <div className="absolute -right-2 -bottom-2 w-20 h-20 bg-yellow-400 rounded-full flex items-center justify-center border-4 border-[#1e3a8a] group-hover:scale-110 transition-transform">
-                <Gift className="h-8 w-8 text-red-500" />
-              </div>
             </Link>
 
           </div>
@@ -387,8 +384,6 @@ export default function Home() {
                   href="/curriculum"
                   className={`bg-white rounded-2xl border border-gray-200 p-6 shadow-sm relative overflow-hidden group flex flex-col ${st.hover} transition-colors`}
                 >
-                  <div className={`absolute top-0 right-0 w-24 h-24 ${st.decor} rounded-bl-full opacity-50 group-hover:scale-110 transition-transform pointer-events-none`}></div>
-
                   <div className="relative flex items-center justify-between mb-4">
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${st.iconBg}`}>
                       {content.icon}
@@ -483,7 +478,6 @@ export default function Home() {
           <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 md:gap-6">
             {/* Mentoring */}
             <Link href="/community/5" className="block bg-white rounded-2xl border border-gray-200 p-6 shadow-sm flex-1 relative overflow-hidden group cursor-pointer">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-bl-full -z-10 opacity-50"></div>
               <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center gap-2">
                   <span className="bg-blue-50 text-blue-600 text-xs font-bold px-2 py-0.5 rounded border border-blue-100">Premium</span>
@@ -509,7 +503,6 @@ export default function Home() {
 
             {/* Tip */}
             <Link href="/community/6" className="block bg-white rounded-2xl border border-gray-200 p-6 shadow-sm flex-1 relative overflow-hidden group cursor-pointer">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-orange-50 rounded-bl-full -z-10 opacity-50"></div>
               <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center gap-2">
                   <span className="bg-orange-50 text-orange-500 text-xs font-bold px-2 py-0.5 rounded border border-orange-100">BEST</span>

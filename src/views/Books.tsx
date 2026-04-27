@@ -115,8 +115,6 @@ export default function Books() {
       </div>
 
       <section className="mt-12 bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 rounded-3xl p-6 md:p-8 text-white overflow-hidden relative">
-        <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10" />
-        <div className="absolute -left-16 -bottom-20 h-48 w-48 rounded-full bg-white/10" />
         <div className="relative grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-6 items-center">
           <div className="flex justify-center lg:justify-start">
             <div className="relative w-40 h-48 bg-white/10 rounded-2xl overflow-hidden border border-white/20">

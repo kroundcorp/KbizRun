@@ -47,7 +47,6 @@ export default function ExamResult() {
       </Link>
 
       <div className="bg-gradient-to-br from-[#1a103c] to-[#37257a] rounded-3xl p-6 md:p-10 text-white mb-6 md:mb-8 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-40 h-40 md:w-56 md:h-56 bg-white/5 rounded-full -translate-y-1/3 translate-x-1/4"></div>
         <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
           <div className="md:col-span-2">
             <p className="text-purple-200 text-xs md:text-sm mb-2">{exam.title}</p>

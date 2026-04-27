@@ -31,7 +31,6 @@ export default function Mentoring() {
   return (
     <main className="max-w-[1200px] mx-auto px-4 py-8 md:py-10">
       <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-6 md:p-10 text-white mb-8 md:mb-10 relative overflow-hidden">
-        <div className="absolute -right-10 -top-10 w-40 h-40 md:w-52 md:h-52 rounded-full bg-white/10"></div>
         <div className="relative z-10">
           <span className="bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full">PREMIUM</span>
           <h1 className="text-3xl md:text-4xl font-black mt-3 mb-2">1:1 멘토링</h1>

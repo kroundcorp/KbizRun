@@ -106,7 +106,6 @@ export default function StepDetail() {
       </button>
 
       <section className={`rounded-3xl overflow-hidden bg-gradient-to-br ${color.gradient} text-white p-6 md:p-10 relative mb-6 md:mb-8`}>
-        <div className="absolute top-0 right-0 w-56 h-56 md:w-80 md:h-80 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/3" />
         <div className="relative max-w-3xl">
           <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-3 md:mb-4">
             <span className="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-md text-white text-xs font-black px-3 py-1.5 rounded-full">

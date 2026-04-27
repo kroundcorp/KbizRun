@@ -214,8 +214,6 @@ export default function Curriculum() {
   return (
     <main className="max-w-[1200px] mx-auto px-4 py-8 md:py-10">
       <section className="rounded-[2rem] bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-700 px-6 py-8 md:px-10 md:py-12 text-white mb-8 md:mb-10 overflow-hidden relative">
-        <div className="absolute -right-12 -top-16 h-48 w-48 rounded-full bg-white/10" />
-        <div className="absolute -left-16 -bottom-20 h-56 w-56 rounded-full bg-white/10" />
         <div className="relative">
           <p className="text-blue-100 font-bold text-sm mb-3">CURRICULUM</p>
           <h1 className="text-3xl md:text-5xl font-black mb-4">공공조달 전체 목차</h1>

@@ -149,7 +149,6 @@ export default function PlanDetail() {
                 : 'bg-gradient-to-br from-[#1a103c] to-[#37257a]'
             }`}
           >
-            <div className="absolute top-0 right-0 w-48 h-48 md:w-64 md:h-64 bg-white/5 rounded-full -translate-y-1/3 translate-x-1/3" />
             <div className="relative">
               {plan.badge && (
                 <span
